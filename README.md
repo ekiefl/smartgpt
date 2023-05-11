@@ -5,7 +5,9 @@ SmartGPT as explained in this video by AIExplained: https://www.youtube.com/watc
 ## Installation
 
 <details><summary">Install option (1): PIP</summary>
+
 FIXME
+
 </details>
 
 
