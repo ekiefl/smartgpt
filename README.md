@@ -4,14 +4,14 @@ SmartGPT as explained in this video by AIExplained: https://www.youtube.com/watc
 
 ## Installation
 
-<details><summary">Install option (1): PIP</summary>
+<details><summary>Install option (1): PIP</summary>
 
 FIXME
 
 </details>
 
 
-<details><summary>Install option (3): Developer</summary>
+<details><summary>Install option (2): Developer</summary>
 
 **(i)** create a new, python environment that uses Python 3.8.10.
 
