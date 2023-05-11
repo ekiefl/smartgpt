@@ -3,3 +3,4 @@ isort
 ipython
 mypy
 pre-commit
+ipdb

@@ -1,2 +1,4 @@
 openai
 attrs
+cattrs
+numpy
