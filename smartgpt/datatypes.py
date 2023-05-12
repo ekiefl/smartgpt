@@ -18,11 +18,67 @@ Classes:
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import List
+
 import attrs
 import cattrs
+import yaml
 
 from smartgpt import strenum
-from smartgpt.credentials import Credentials
+from smartgpt.util import Pathish
+
+
+@attrs.define(frozen=True)
+class Settings:
+    generator_temps: List[float]
+    researcher_temp: float
+    resolver_temp: float
+    model: str
+    mode: Mode
+    credentials: Credentials
+
+    @property
+    def num_agents(self) -> int:
+        return len(self.generator_temps)
+
+    def save(self, path: Pathish) -> Path:
+        path = Path(path)
+        with path.open("w") as file:
+            yaml.dump(cattrs.unstructure(self), file)
+
+        return path
+
+    @classmethod
+    def load(cls, path: Pathish) -> Settings:
+        path = Path(path)
+        if not path.is_file():
+            raise Exception(f"{path} is not a file")
+
+        with path.open("r") as file:
+            data = yaml.safe_load(file)
+
+        return cattrs.structure(data, cls)
+
+    @classmethod
+    def default(cls) -> Settings:
+        return cls(
+            generator_temps=[0.5, 0.5, 0.5],
+            researcher_temp=0.5,
+            resolver_temp=0.5,
+            model="gpt-4",
+            mode=Mode.RESOLVER,
+            credentials=Credentials.dummy(),
+        )
+
+
+@attrs.define
+class Credentials:
+    key: str
+
+    @classmethod
+    def dummy(cls) -> Credentials:
+        return cls("XXXXXX")
 
 
 class Mode(strenum.StrEnum):
@@ -47,7 +103,7 @@ class GPTConfig:
     """
 
     model: str = attrs.field(default="gpt-4")
-    credentials: Credentials = attrs.field(factory=Credentials.default)
+    credentials: Credentials = attrs.field(default=Settings.default().credentials)
     mode: Mode = attrs.field(default=Mode.ZERO_SHOT)
 
     @classmethod

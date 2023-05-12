@@ -22,8 +22,16 @@ import openai
 from openai.error import InvalidRequestError
 
 from smartgpt import prompts
-from smartgpt.credentials import Credentials
-from smartgpt.datatypes import GPTConfig, Message, Mode, Response, Role
+from smartgpt.datatypes import (
+    Credentials,
+    GPTConfig,
+    Message,
+    Mode,
+    Response,
+    Role,
+    Settings,
+)
+from smartgpt.user_profile import SETTINGS_PATH
 from smartgpt.util import REPLColors
 
 USER_PREFIX = REPLColors.OKGREEN + "> " + REPLColors.ENDC
@@ -53,7 +61,7 @@ class Agent:
     """
 
     messages: List[Dict[str, str]] = attrs.field(factory=list)
-    credentials: Credentials = attrs.field(factory=Credentials.default)
+    credentials: Credentials = attrs.field(default=Settings.default().credentials)
     model: str = attrs.field(default="gpt-4")
     temp: float = attrs.field(default=0.5)
     token_counts: Dict[int, int] = attrs.field(factory=dict)
@@ -219,7 +227,44 @@ class SmartGPT:
 
         return response
 
+    @classmethod
+    def from_settings(cls, settings: Settings) -> SmartGPT:
+        return cls(
+            config=GPTConfig(
+                credentials=settings.credentials,
+                model=settings.model,
+                mode=settings.mode,
+            ),
+            main=Agent(
+                credentials=settings.credentials,
+                model=settings.model,
+                temp=settings.resolver_temp,
+            ),
+            researcher=Agent(
+                credentials=settings.credentials,
+                model=settings.model,
+                temp=settings.researcher_temp,
+            ),
+            resolver=Agent(
+                credentials=settings.credentials,
+                model=settings.model,
+                temp=settings.resolver_temp,
+            ),
+            generators=[
+                Agent(
+                    credentials=settings.credentials,
+                    model=settings.model,
+                    temp=settings.generator_temps[i],
+                )
+                for i in range(settings.num_agents)
+            ],
+        )
+
+    @classmethod
+    def default(cls) -> SmartGPT:
+        return cls.from_settings(Settings.load(SETTINGS_PATH))
+
 
 if __name__ == "__main__":
-    app = SmartGPT()
+    app = SmartGPT.default()
     app.repl()

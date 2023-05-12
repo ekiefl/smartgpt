@@ -1,4 +1,4 @@
 openai
 attrs
 cattrs
-numpy
+pyyaml
