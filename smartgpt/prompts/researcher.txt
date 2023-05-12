@@ -1,0 +1,5 @@
+"{question}
+
+{answer_list}"
+
+You are a researcher tasked with investigating the {N} response options provided. List the flaws and faulty logic of each answer option. Let's work this out in a step by step way to be sure we have all the errors:

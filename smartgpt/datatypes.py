@@ -7,13 +7,20 @@ from smartgpt import strenum
 from smartgpt.credentials import Credentials
 
 
+class Mode(strenum.StrEnum):
+    ZERO_SHOT = strenum.auto()
+    STEP_BY_STEP = strenum.auto()
+    RESOLVER = strenum.auto()
+
+
 @attrs.define(frozen=True)
-class ChatConfig:
+class GPTConfig:
     model: str = attrs.field(default="gpt-4")
     credentials: Credentials = attrs.field(factory=Credentials.default)
+    mode: Mode = attrs.field(default=Mode.ZERO_SHOT)
 
     @classmethod
-    def default(cls) -> ChatConfig:
+    def default(cls) -> GPTConfig:
         return cls()
 
 
