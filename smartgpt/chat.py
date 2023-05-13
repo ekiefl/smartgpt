@@ -15,11 +15,13 @@ Classes:
 
 from __future__ import annotations
 
+import copy
+import time
 from typing import Dict, List, Tuple
 
 import attrs
 import openai
-from openai.error import InvalidRequestError
+from openai.error import InvalidRequestError, RateLimitError
 
 from smartgpt import prompts
 from smartgpt.datatypes import (
@@ -31,6 +33,7 @@ from smartgpt.datatypes import (
     Role,
     Settings,
 )
+from smartgpt.logger import logger
 from smartgpt.user_profile import SETTINGS_PATH
 from smartgpt.util import REPLColors
 
@@ -42,9 +45,8 @@ GPT_PREFIX = REPLColors.OKBLUE + "\n" + REPLColors.ENDC
 class Agent:
     """Represents an interface to the GPT model.
 
-    It encapsulates the process of sending
-    messages to the model and receiving responses. The class also handles token count
-    management and message history.
+    It encapsulates the process of sending messages to the model and receiving
+    responses. The class also handles message history.
 
     Attributes:
         messages:
@@ -55,16 +57,12 @@ class Agent:
             The model to use (default is 'gpt-4').
         temp:
             The temperature parameter to use when generating responses.
-        token_counts:
-            A dictionary mapping the length of the message history to the total token
-            count.
     """
 
     messages: List[Dict[str, str]] = attrs.field(factory=list)
     credentials: Credentials = attrs.field(default=Settings.default().credentials)
     model: str = attrs.field(default="gpt-4")
     temp: float = attrs.field(default=0.5)
-    token_counts: Dict[int, int] = attrs.field(factory=dict)
 
     def append_message(self, message: Message) -> None:
         """Appends a message to the current message history.
@@ -85,19 +83,26 @@ class Agent:
                 A Response object that encapsulates the model's response, which includes
                 the generated message, remaining tokens, and other metadata.
         """
-        return Response.from_openai_response(
-            openai.ChatCompletion.create(
-                model=self.model,
-                messages=self.messages,
-                api_key=self.credentials.key,
+
+        try:
+            return Response.from_openai_response(
+                openai.ChatCompletion.create(
+                    model=self.model,
+                    messages=self.messages,
+                    api_key=self.credentials.key,
+                )
             )
-        )
+        except RateLimitError:
+            logger.info("Hit rate limit. Sleeping for 20 seconds...")
+            time.sleep(20)
+            return self.request()
+        except InvalidRequestError:
+            raise NotImplementedError()
 
     def response(self, prompt: str) -> Message:
         """Appends prompt to message history and sends request to the GPT model.
 
-        The model's response is then appended to the message history, and the total
-        tokens used is updated.
+        The model's response is then appended to the message history.
 
         Args:
             prompt:
@@ -109,13 +114,9 @@ class Agent:
         """
         self.append_message(Message(Role.USER, prompt))
 
-        try:
-            response = self.request()
-        except InvalidRequestError:
-            raise NotImplementedError()
+        response = self.request()
 
         self.append_message(response.message)
-        self.token_counts[len(self.messages)] = response.total_tokens
 
         return response.message
 
@@ -173,12 +174,12 @@ class SmartGPT:
         """
         prompt = input(USER_PREFIX)
 
-        response = self.create_response(prompt)
+        response_message = self.create_response(prompt)
 
         if not quiet:
-            print(GPT_PREFIX + response.content + "\n")
+            print(GPT_PREFIX + response_message.content + "\n")
 
-        return prompt, response.content
+        return prompt, response_message.content
 
     def create_response(self, prompt: str) -> Message:
         """
@@ -204,26 +205,55 @@ class SmartGPT:
             Message:
                 The model's response encapsulated in a Message object.
         """
+
+        logger.debug(f"Creating response for prompt: '{prompt}'")
+
         if self.config.mode == Mode.ZERO_SHOT:
+            logger.debug("Mode: ZERO_SHOT")
+
             response = self.main.response(prompt)
+            logger.debug(f"ZERO_SHOT response:\n{response.content}")
 
         elif self.config.mode == Mode.STEP_BY_STEP:
-            response = self.main.response(prompts.step_by_step(prompt))
+            logger.debug("Mode: STEP_BY_STEP")
+
+            transformed_prompt = prompts.step_by_step(prompt)
+            logger.debug(f"Transformed prompt:\n{transformed_prompt}")
+
+            response = self.main.response(transformed_prompt)
+            logger.debug(f"STEP_BY_STEP response:\n{response.content}")
 
         elif self.config.mode == Mode.RESOLVER:
+            logger.debug("Mode: RESOLVER")
+
             candidates: List[str] = []
-            for generator in self.generators:
-                generator.messages = self.main.messages
-                generator.token_counts = self.main.token_counts
-                candidates.append(generator.response(prompt).content)
+            candidate_prompt = prompts.step_by_step(prompt)
+            logger.debug(f"Prompt for generators:\n{candidate_prompt}")
 
-            self.researcher.messages = self.main.messages
-            self.researcher.token_counts = self.main.token_counts
-            self.researcher.response(prompts.you_are_a_researcher(prompt, candidates))
+            for i, generator in enumerate(self.generators):
+                generator.messages = copy.deepcopy(self.main.messages)
 
-            self.resolver.messages = self.researcher.messages
-            self.resolver.token_counts = self.researcher.token_counts
-            response = self.resolver.response(prompts.you_are_a_resolver())
+                candidate = generator.response(candidate_prompt).content
+                candidates.append(candidate)
+                logger.debug(f"Generator {i+1} response:\n{candidate}")
+
+            researcher_prompt = prompts.you_are_a_researcher(prompt, candidates)
+            logger.debug(f"Researcher prompt:\n{researcher_prompt}")
+
+            self.researcher.messages = copy.deepcopy(self.main.messages)
+
+            researcher_response = self.researcher.response(researcher_prompt)
+            logger.debug(f"Researcher response:\n{researcher_response.content}")
+
+            resolver_prompt = prompts.you_are_a_resolver(candidates)
+            logger.debug(f"Resolver prompt:\n{resolver_prompt}")
+
+            self.resolver.messages = copy.deepcopy(self.researcher.messages)
+            response = self.resolver.response(resolver_prompt)
+
+            # Add the prompt and response to the main agent
+            self.main.append_message(Message(Role.USER, candidate_prompt))
+            self.main.append_message(response)
 
         return response
 
