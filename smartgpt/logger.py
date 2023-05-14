@@ -1,6 +1,5 @@
 import logging
 import sys
-import time
 
 
 class CustomFormatter(logging.Formatter):
@@ -10,16 +9,21 @@ class CustomFormatter(logging.Formatter):
     yellow = "\x1b[33;1m"
     green = "\x1b[32;1m"
     reset = "\x1b[0m"
+    format_str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
     def format(self, record):
         record.levelname = self.green + record.levelname + self.reset
         record.name = self.blue + record.name + self.reset
-        record.asctime = (
-            self.yellow + self.formatTime(record, self.datefmt) + self.reset
-        )
-        return logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        ).format(record)
+        return super().format(record)
+
+    def formatMessage(self, record):
+        # Override asctime in the format string with the colorized version
+        return self.format_str % {
+            "asctime": self.yellow + self.formatTime(record, self.datefmt) + self.reset,
+            "name": record.name,
+            "levelname": record.levelname,
+            "message": record.getMessage(),
+        }
 
 
 logger = logging.getLogger(name="SmartGPT")
