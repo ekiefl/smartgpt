@@ -12,22 +12,30 @@ class CustomFormatter(logging.Formatter):
     format_str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
     def format(self, record):
-        record.levelname = self.green + record.levelname + self.reset
+        record.levelname = self.yellow + record.levelname + self.reset
         record.name = self.blue + record.name + self.reset
         return super().format(record)
 
     def formatMessage(self, record):
         # Override asctime in the format string with the colorized version
         return self.format_str % {
-            "asctime": self.yellow + self.formatTime(record, self.datefmt) + self.reset,
+            "asctime": self.green + self.formatTime(record, self.datefmt) + self.reset,
             "name": record.name,
             "levelname": record.levelname,
             "message": record.getMessage(),
         }
 
 
-logger = logging.getLogger(name="SmartGPT")
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(CustomFormatter())
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+
+
+def get_logger(name: str = "SmartGPT") -> logging.Logger:
+    logger = logging.getLogger(name=name)
+    logger.addHandler(handler)
+    logger.propagate = False
+
+    return logger
+
+
+default_logger = get_logger()

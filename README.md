@@ -66,7 +66,7 @@ environment**:
 mkdir -p ${CONDA_PREFIX}/etc/conda/activate.d
 cat <<EOF >${CONDA_PREFIX}/etc/conda/activate.d/smartgpt.sh
 export PYTHONPATH=\$PYTHONPATH:$(pwd)
-export PATH=\$PATH:$(pwd)
+export PATH=\$PATH:$(pwd)/bin
 EOF
 ```
 

@@ -29,7 +29,7 @@ from smartgpt import strenum
 from smartgpt.util import Pathish
 
 
-@attrs.define(frozen=True)
+@attrs.define
 class Settings:
     generator_temps: List[float]
     researcher_temp: float
@@ -37,6 +37,7 @@ class Settings:
     model: str
     mode: Mode
     credentials: Credentials
+    debug: bool
 
     @property
     def num_agents(self) -> int:
@@ -69,6 +70,7 @@ class Settings:
             model="gpt-4",
             mode=Mode.RESOLVER,
             credentials=Credentials.dummy(),
+            debug=False,
         )
 
 

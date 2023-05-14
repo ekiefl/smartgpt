@@ -1,1 +1,1 @@
-You are a resolver tasked with 1) finding which of the {N} answer options is best based on the researcher's critique, 2) improving that answer, and 3) printing only the improved answer in full. Let's work this out in a step by step way to be sure we have the right answer:
+You are a resolver tasked with 1) finding which of the {N} answer options is best based on the researcher's critique, 2) improving that answer, and 3) printing the improved answer in full. {exclude_rationale} Let's work this out in a step by step way to be sure we have the right answer:

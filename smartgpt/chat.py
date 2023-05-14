@@ -16,8 +16,9 @@ Classes:
 from __future__ import annotations
 
 import copy
+import logging
 import time
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import attrs
 import openai
@@ -33,7 +34,7 @@ from smartgpt.datatypes import (
     Role,
     Settings,
 )
-from smartgpt.logger import logger
+from smartgpt.logger import default_logger, get_logger
 from smartgpt.user_profile import SETTINGS_PATH
 from smartgpt.util import REPLColors
 
@@ -93,7 +94,7 @@ class Agent:
                 )
             )
         except RateLimitError:
-            logger.info("Hit rate limit. Sleeping for 20 seconds...")
+            default_logger.info("Hit rate limit. Sleeping for 20 seconds...")
             time.sleep(20)
             return self.request()
         except InvalidRequestError:
@@ -151,6 +152,13 @@ class SmartGPT:
     researcher: Agent
     resolver: Agent
     generators: List[Agent]
+    debug: bool = False
+
+    logger: logging.Logger = attrs.field(init=False)
+
+    def __attrs_post_init__(self) -> None:
+        self.logger = get_logger()
+        self.logger.setLevel(logging.DEBUG if self.debug else logging.INFO)
 
     def repl(self) -> None:
         """Starts the Read-Eval-Print-Loop (REPL) for interaction with the model
@@ -206,47 +214,59 @@ class SmartGPT:
                 The model's response encapsulated in a Message object.
         """
 
-        logger.debug(f"Creating response for prompt: '{prompt}'")
+        self.logger.debug(f"Creating response for prompt: '{prompt}'")
 
         if self.config.mode == Mode.ZERO_SHOT:
-            logger.debug("Mode: ZERO_SHOT")
+            self.logger.info("Generating response for zero-shot prompt...")
+            self.logger.debug("Mode: ZERO_SHOT")
 
             response = self.main.response(prompt)
-            logger.debug(f"ZERO_SHOT response:\n{response.content}")
+            self.logger.debug(f"ZERO_SHOT response:\n{response.content}")
 
         elif self.config.mode == Mode.STEP_BY_STEP:
-            logger.debug("Mode: STEP_BY_STEP")
+            self.logger.info(
+                "Generating response for chain-of-thought-flavored prompt..."
+            )
+            self.logger.debug("Mode: STEP_BY_STEP")
 
             transformed_prompt = prompts.step_by_step(prompt)
-            logger.debug(f"Transformed prompt:\n{transformed_prompt}")
+            self.logger.debug(f"Transformed prompt:\n{transformed_prompt}")
 
             response = self.main.response(transformed_prompt)
-            logger.debug(f"STEP_BY_STEP response:\n{response.content}")
+            self.logger.debug(f"STEP_BY_STEP response:\n{response.content}")
 
         elif self.config.mode == Mode.RESOLVER:
-            logger.debug("Mode: RESOLVER")
+            self.logger.debug("Mode: RESOLVER")
 
             candidates: List[str] = []
             candidate_prompt = prompts.step_by_step(prompt)
-            logger.debug(f"Prompt for generators:\n{candidate_prompt}")
+            self.logger.debug(f"Prompt for generators:\n{candidate_prompt}")
 
             for i, generator in enumerate(self.generators):
+                self.logger.info(f"Generating response for generator {i+1}...")
+
                 generator.messages = copy.deepcopy(self.main.messages)
 
                 candidate = generator.response(candidate_prompt).content
                 candidates.append(candidate)
-                logger.debug(f"Generator {i+1} response:\n{candidate}")
+                self.logger.debug(f"Generator {i+1} response:\n{candidate}")
+
+            self.logger.info("Generating response for researcher...")
 
             researcher_prompt = prompts.you_are_a_researcher(prompt, candidates)
-            logger.debug(f"Researcher prompt:\n{researcher_prompt}")
+            self.logger.debug(f"Researcher prompt:\n{researcher_prompt}")
 
             self.researcher.messages = copy.deepcopy(self.main.messages)
 
             researcher_response = self.researcher.response(researcher_prompt)
-            logger.debug(f"Researcher response:\n{researcher_response.content}")
+            self.logger.debug(f"Researcher response:\n{researcher_response.content}")
 
-            resolver_prompt = prompts.you_are_a_resolver(candidates)
-            logger.debug(f"Resolver prompt:\n{resolver_prompt}")
+            self.logger.info("Generating response for resolver...")
+
+            resolver_prompt = prompts.you_are_a_resolver(
+                candidates, silence_rationale=not self.debug
+            )
+            self.logger.debug(f"Resolver prompt:\n{resolver_prompt}")
 
             self.resolver.messages = copy.deepcopy(self.researcher.messages)
             response = self.resolver.response(resolver_prompt)
@@ -255,10 +275,15 @@ class SmartGPT:
             self.main.append_message(Message(Role.USER, candidate_prompt))
             self.main.append_message(response)
 
+        logging.debug("Finished generating response")
+
         return response
 
     @classmethod
-    def from_settings(cls, settings: Settings) -> SmartGPT:
+    def create(cls, settings: Optional[Settings] = None) -> SmartGPT:
+        if settings is None:
+            settings = Settings.load(SETTINGS_PATH)
+
         return cls(
             config=GPTConfig(
                 credentials=settings.credentials,
@@ -288,13 +313,5 @@ class SmartGPT:
                 )
                 for i in range(settings.num_agents)
             ],
+            debug=settings.debug,
         )
-
-    @classmethod
-    def default(cls) -> SmartGPT:
-        return cls.from_settings(Settings.load(SETTINGS_PATH))
-
-
-if __name__ == "__main__":
-    app = SmartGPT.default()
-    app.repl()

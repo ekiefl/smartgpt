@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+import argparse
+
+from smartgpt import Mode, Settings, SmartGPT
+from smartgpt.user_profile import SETTINGS_PATH
+
+
+def main(args: argparse.Namespace) -> None:
+    settings = override_settings_with_CLI_args(Settings.load(SETTINGS_PATH), args)
+    app = SmartGPT.create(settings)
+    app.repl()
+
+
+def override_settings_with_CLI_args(
+    settings: Settings, args: argparse.Namespace
+) -> Settings:
+    """Overwrites settings attributes with those specified in CLI"""
+    if args.mode is not None:
+        settings.mode = args.mode
+    if args.debug:
+        settings.debug = True
+
+    return settings
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Run the SmartGPT application.",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging.",
+        default=None,
+    )
+    parser.add_argument(
+        "--mode",
+        required=False,
+        choices=list(Mode),
+        help="Modes of operation",
+    )
+    parser.add_argument(
+        "--print-settings-file",
+        action="store_true",
+        help=(
+            "Prints the settings file location. Modify this file to change the "
+            "default behavior."
+        ),
+    )
+    args = parser.parse_args()
+
+    main(args)

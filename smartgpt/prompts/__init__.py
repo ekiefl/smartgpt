@@ -22,5 +22,13 @@ def you_are_a_researcher(question: str, candidates: List[str]) -> str:
     )
 
 
-def you_are_a_resolver(candidates: List[str]) -> str:
-    return prompts["resolver"].format(N=len(candidates))
+def you_are_a_resolver(candidates: List[str], silence_rationale: bool) -> str:
+    exclude_rational = (
+        "Please do steps 1) and 2) silently and only print the improved answer. "
+        "Exclude mention that it is an improved answer."
+    )
+
+    return prompts["resolver"].format(
+        N=len(candidates),
+        exclude_rationale=exclude_rational if silence_rationale else "",
+    )
