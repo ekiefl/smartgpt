@@ -4,3 +4,4 @@ ipython
 mypy
 pre-commit
 ipdb
+twine
