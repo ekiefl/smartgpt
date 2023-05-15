@@ -25,18 +25,11 @@ import openai
 from openai.error import InvalidRequestError, RateLimitError
 
 from smartgpt import prompts
-from smartgpt.datatypes import (
-    Credentials,
-    Message,
-    Mode,
-    Response,
-    Role,
-    Settings,
-    Verbosity,
-)
+from smartgpt.datatypes import Message, Mode, Response, Role, Verbosity
 from smartgpt.logger import default_logger, get_logger
 from smartgpt.repl import repl
-from smartgpt.user_profile import get_settings
+from smartgpt.settings.credentials import Credentials
+from smartgpt.settings.user import UserSettings
 
 
 @attrs.define(frozen=True)
@@ -53,7 +46,7 @@ class GPTConfig:
     """
 
     model: str = attrs.field(default="gpt-4")
-    credentials: Credentials = attrs.field(default=get_settings().credentials)
+    credentials: Credentials = attrs.field(default=Credentials.default())
     mode: Mode = attrs.field(default=Mode.ZERO_SHOT)
 
     @classmethod
@@ -86,7 +79,7 @@ class Agent:
     """
 
     messages: List[Dict[str, str]] = attrs.field(factory=list)
-    credentials: Credentials = attrs.field(default=get_settings().credentials)
+    credentials: Credentials = attrs.field(default=Credentials.default())
     model: str = attrs.field(default="gpt-4")
     temp: float = attrs.field(default=0.5)
 
@@ -276,10 +269,10 @@ class SmartGPT:
 
     @classmethod
     def create(
-        cls, settings: Optional[Settings] = None, mode: Optional[Mode] = None
+        cls, settings: Optional[UserSettings] = None, mode: Optional[Mode] = None
     ) -> SmartGPT:
         if settings is None:
-            settings = get_settings()
+            settings = UserSettings.default()
 
         if mode is not None:
             settings.mode = mode

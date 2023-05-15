@@ -18,111 +18,16 @@ Classes:
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import List
-
 import attrs
 import cattrs
-import yaml
 
 from smartgpt import strenum
-from smartgpt.strenum import StrEnum
-from smartgpt.util import Pathish
-
-cattrs.register_unstructure_hook(
-    StrEnum,
-    lambda v: v.value,
-)
-
-
-@attrs.define
-class Settings:
-    generator_temps: List[float]
-    researcher_temp: float
-    resolver_temp: float
-    model: str
-    mode: Mode
-    credentials: Credentials
-    verbosity: Verbosity
-    vi_mode: bool
-
-    def __repr__(self):
-        margin = " " * 4
-        lines = [f"\n{margin}Runtime Settings"]
-        middle_prefix = f"{margin}├── "
-        final_prefix = f"{margin}└── "
-
-        attr_names = [attr.name for attr in attrs.fields(Settings)]
-        max_len = max(len(attr_name) for attr_name in attr_names)
-
-        for idx, attr_name in enumerate(attr_names):
-            attr_val = getattr(self, attr_name)
-            spacer = " " * (max_len - len(attr_name))
-            prefix = final_prefix if idx == len(attr_names) - 1 else middle_prefix
-            lines.append(f"{prefix}{attr_name}{spacer} = {attr_val.__str__()}")
-
-        return "\n".join(lines) + "\n"
-
-    @property
-    def num_agents(self) -> int:
-        return len(self.generator_temps)
-
-    def save(self, path: Pathish) -> Path:
-        path = Path(path)
-        with path.open("w") as file:
-            yaml.dump(cattrs.unstructure(self), file)
-
-        return path
-
-    @classmethod
-    def load(cls, path: Pathish) -> Settings:
-        path = Path(path)
-        if not path.is_file():
-            raise Exception(f"{path} is not a file")
-
-        with path.open("r") as file:
-            data = yaml.safe_load(file)
-
-        return cattrs.structure(data, cls)
-
-    @classmethod
-    def fallback(cls) -> Settings:
-        return cls(
-            generator_temps=[0.7, 0.7, 0.7],
-            researcher_temp=0.5,
-            resolver_temp=0.5,
-            model="gpt-4",
-            mode=Mode.RESOLVER,
-            credentials=Credentials.dummy(),
-            verbosity=Verbosity.SOME,
-            vi_mode=False,
-        )
 
 
 class Verbosity(strenum.StrEnum):
     NONE = strenum.auto()
     SOME = strenum.auto()
     ALL = strenum.auto()
-
-
-DUMMY_KEY = "XXXXXX"
-
-
-def _api_key_repr(key: str) -> str:
-    if key == DUMMY_KEY:
-        return key
-
-    assert len(key) > 8
-    return key[:4] + "*" * 4 + key[-4:]
-
-
-@attrs.define
-class Credentials:
-    key: str = attrs.field(repr=_api_key_repr)
-
-    @classmethod
-    def dummy(cls) -> Credentials:
-        return cls(DUMMY_KEY)
 
 
 class Mode(strenum.StrEnum):

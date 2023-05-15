@@ -1,19 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
-import sys
 import textwrap
 
-from smartgpt import Mode, Settings, SmartGPT, Verbosity
-from smartgpt.user_profile import SETTINGS_PATH
-from smartgpt.util import color_text
+from smartgpt import Mode, SmartGPT, UserSettings, Verbosity
+from smartgpt.settings.constants import SETTINGS_PATH
 
 
 def main(args: argparse.Namespace) -> None:
-    if args.print_settings_file:
-        print_settings_file_and_exit()
-
-    settings = override_settings_with_CLI_args(Settings.load(SETTINGS_PATH), args)
+    settings = override_settings_with_CLI_args(UserSettings.default(), args)
 
     print_settings(settings)
 
@@ -21,19 +16,13 @@ def main(args: argparse.Namespace) -> None:
     app.repl()
 
 
-def print_settings_file_and_exit() -> None:
-    print(f"The contents of {SETTINGS_PATH}:\n")
-    print(color_text(open(SETTINGS_PATH).read(), color="cyan"))
-    sys.exit()
-
-
-def print_settings(settings: Settings) -> None:
+def print_settings(settings: UserSettings) -> None:
     print(settings)
 
 
 def override_settings_with_CLI_args(
-    settings: Settings, args: argparse.Namespace
-) -> Settings:
+    settings: UserSettings, args: argparse.Namespace
+) -> UserSettings:
     """Overwrites settings attributes with those specified in CLI"""
     if args.mode is not None:
         settings.mode = args.mode
@@ -122,14 +111,6 @@ if __name__ == "__main__":
         "--model",
         required=False,
         help=("The name of the model you want (e.g. gpt-4, gpt-3.5-turbo)"),
-    )
-    parser.add_argument(
-        "--print-settings-file",
-        action="store_true",
-        help=(
-            "Prints the settings file and location. Modify this file to change the "
-            "default behavior."
-        ),
     )
     args = parser.parse_args()
 
