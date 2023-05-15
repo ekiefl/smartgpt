@@ -39,7 +39,7 @@ def remove_spaces(text):
 class SmartGPTError(Exception):
     def __init__(self, e=None):
         self.e = remove_spaces(e)
-        self.error_type = "Config Error"
+        self.error_type = "SmartGPT Error"
         Exception.__init__(self)
         return
 
