@@ -4,7 +4,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.history import FileHistory
 
-from smartgpt.datatypes import Message
+from smartgpt.message import Message
 from smartgpt.settings.constants import REPL_HISTORY_PATH
 from smartgpt.settings.user import UserSettings
 
@@ -50,16 +50,16 @@ class Model(Protocol):
         ...
 
 
-def repl(model: Model) -> None:
+def repl(model: Model, quiet: bool = False) -> None:
     """Starts the Read-Eval-Print-Loop (REPL) for interaction with a model
 
     This function runs indefinitely until the session is manually terminated.
     """
     while True:
-        _, _ = repl_iteration(model)
+        _, _ = repl_iteration(model, quiet=quiet)
 
 
-def repl_iteration(model: Model, quiet=False) -> Tuple[str, str]:
+def repl_iteration(model: Model, quiet: bool = True) -> Tuple[str, str]:
     """Executes a single pass of the Read-Eval-Print-Loop (REPL)
 
     Args:

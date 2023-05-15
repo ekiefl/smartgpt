@@ -3,8 +3,10 @@
 import argparse
 import textwrap
 
-from smartgpt import Mode, SmartGPT, UserSettings, Verbosity
+from smartgpt.chat import SmartGPT
+from smartgpt.datatypes import Mode, Verbosity
 from smartgpt.settings.constants import SETTINGS_PATH
+from smartgpt.settings.user import UserSettings
 
 
 def main(args: argparse.Namespace) -> None:
