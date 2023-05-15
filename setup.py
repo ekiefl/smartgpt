@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="smartgpt",
-    version="0.1.0.dev2",
+    version="0.1.0",
     packages=find_packages(),
     scripts=["bin/smartgpt"],
     author_email="kiefl.evan@gmail.com",

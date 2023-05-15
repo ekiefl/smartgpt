@@ -36,7 +36,7 @@ session: PromptSession = PromptSession(
 
 USER_PREFIX = FormattedText(
     [
-        ("fg:ansigreen", "(To submit: press ESC, then ENTER)\n"),
+        ("", "(To submit: press ESC, then ENTER)\n"),
         ("bold fg:ansigreen", "> "),
     ]
 )

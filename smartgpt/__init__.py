@@ -8,6 +8,7 @@ from smartgpt.datatypes import (
     Response,
     Role,
     Settings,
+    Verbosity,
 )
 
 __version__ = "0.1.0"

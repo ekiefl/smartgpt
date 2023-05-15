@@ -1,6 +1,8 @@
 import logging
 import sys
 
+from smartgpt.datatypes import Verbosity
+
 
 class CustomFormatter(logging.Formatter):
     """Logging Formatter to add colors"""
@@ -30,10 +32,21 @@ handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(CustomFormatter())
 
 
-def get_logger(name: str = "SmartGPT") -> logging.Logger:
+def get_logger(
+    name: str = "SmartGPT", verbosity: Verbosity = Verbosity.SOME
+) -> logging.Logger:
     logger = logging.getLogger(name=name)
     logger.addHandler(handler)
     logger.propagate = False
+
+    if verbosity == Verbosity.NONE:
+        logger.setLevel(logging.CRITICAL)
+    elif verbosity == Verbosity.SOME:
+        logger.setLevel(logging.INFO)
+    elif verbosity == Verbosity.ALL:
+        logger.setLevel(logging.DEBUG)
+    else:
+        raise NotImplementedError()
 
     return logger
 

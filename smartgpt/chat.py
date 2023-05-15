@@ -33,6 +33,7 @@ from smartgpt.datatypes import (
     Response,
     Role,
     Settings,
+    Verbosity,
 )
 from smartgpt.logger import default_logger, get_logger
 from smartgpt.repl import repl
@@ -149,13 +150,12 @@ class SmartGPT:
     researcher: Agent
     resolver: Agent
     generators: List[Agent]
-    debug: bool = False
+    verbosity: Verbosity = Verbosity.SOME
 
     logger: logging.Logger = attrs.field(init=False)
 
     def __attrs_post_init__(self) -> None:
-        self.logger = get_logger()
-        self.logger.setLevel(logging.DEBUG if self.debug else logging.INFO)
+        self.logger = get_logger(verbosity=self.verbosity)
 
     def create_response(self, prompt: str) -> Message:
         """
@@ -232,7 +232,7 @@ class SmartGPT:
             self.logger.info("Generating response for resolver...")
 
             resolver_prompt = prompts.you_are_a_resolver(
-                candidates, silence_rationale=not self.debug
+                candidates, silence_rationale=(self.verbosity != Verbosity.ALL)
             )
             self.logger.debug(f"Resolver prompt:\n{resolver_prompt}")
 
@@ -281,7 +281,7 @@ class SmartGPT:
                 )
                 for i in range(settings.num_agents)
             ],
-            debug=settings.debug,
+            verbosity=settings.verbosity,
         )
 
     def repl(self) -> None:

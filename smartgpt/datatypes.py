@@ -27,7 +27,6 @@ import yaml
 
 from smartgpt import strenum
 from smartgpt.strenum import StrEnum
-from smartgpt.util import Pathish
 
 cattrs.register_unstructure_hook(
     StrEnum,
@@ -43,8 +42,25 @@ class Settings:
     model: str
     mode: Mode
     credentials: Credentials
-    debug: bool
+    verbosity: Verbosity
     vi_mode: bool
+
+    def __repr__(self):
+        margin = " " * 4
+        lines = [f"\n{margin}Runtime Settings"]
+        middle_prefix = f"{margin}├── "
+        final_prefix = f"{margin}└── "
+
+        attr_names = [attr.name for attr in attrs.fields(Settings)]
+        max_len = max(len(attr_name) for attr_name in attr_names)
+
+        for idx, attr_name in enumerate(attr_names):
+            attr_val = getattr(self, attr_name)
+            spacer = " " * (max_len - len(attr_name))
+            prefix = final_prefix if idx == len(attr_names) - 1 else middle_prefix
+            lines.append(f"{prefix}{attr_name}{spacer} = {attr_val.__str__()}")
+
+        return "\n".join(lines) + "\n"
 
     @property
     def num_agents(self) -> int:
@@ -77,18 +93,35 @@ class Settings:
             model="gpt-4",
             mode=Mode.RESOLVER,
             credentials=Credentials.dummy(),
-            debug=False,
+            verbosity=Verbosity.SOME,
             vi_mode=False,
         )
 
 
+class Verbosity(strenum.StrEnum):
+    NONE = strenum.auto()
+    SOME = strenum.auto()
+    ALL = strenum.auto()
+
+
+DUMMY_KEY = "XXXXXX"
+
+
+def _api_key_repr(key: str) -> str:
+    if key == DUMMY_KEY:
+        return key
+
+    assert len(key) > 8
+    return key[:4] + "*" * 4 + key[-4:]
+
+
 @attrs.define
 class Credentials:
-    key: str
+    key: str = attrs.field(repr=_api_key_repr)
 
     @classmethod
     def dummy(cls) -> Credentials:
-        return cls("XXXXXX")
+        return cls(DUMMY_KEY)
 
 
 class Mode(strenum.StrEnum):
