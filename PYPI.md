@@ -2,7 +2,7 @@ These are instructions on how to make new pip-installable smartgpt versions on P
 Information comes from
 https://betterscientificsoftware.github.io/python-for-hpc/tutorials/python-pypi-packaging/#creating-a-python-package
 
-0. Little stuff: check that `requirements.txt` matches install_requires in `setup.py`. Make sure `smartgpt/__init__.py` has version X.X.X. If you added data files, make sure they are included in the `MANIFEST.in`. Update `logo.png` if its not a sub-version (rename logo.png to previous version (e.g. v0p1.png) open Blender file, update textures, render at top, save as logo.png)
+0. Little stuff: check that `requirements.txt` matches install_requires in `setup.py`. Make sure `smartgpt/__init__.py` has version X.X.X. If you added data files, make sure they are included in the `MANIFEST.in`.
 
 1. Change the version in `setup.py`. Rather than X.X.X, use X.X.X.dev0. This
    version is temporary until I'm positive that things are working properly.
