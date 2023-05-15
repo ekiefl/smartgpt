@@ -1,5 +1,3 @@
-import cattrs
-
 import smartgpt.user_profile
 from smartgpt.chat import Agent, SmartGPT
 from smartgpt.datatypes import (
@@ -11,9 +9,5 @@ from smartgpt.datatypes import (
     Role,
     Settings,
 )
-from smartgpt.strenum import StrEnum
 
-cattrs.register_unstructure_hook(
-    StrEnum,
-    lambda v: v.value,
-)
+__version__ = "0.1.0"
