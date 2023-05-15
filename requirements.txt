@@ -2,3 +2,4 @@ openai
 attrs
 cattrs
 pyyaml
+prompt_toolkit

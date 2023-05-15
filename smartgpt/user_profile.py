@@ -16,3 +16,6 @@ if settings.credentials == (dummy := Credentials.dummy()):
         f"https://platform.openai.com/account/api-keys, then open '{SETTINGS_PATH}' "
         f"and replace '{dummy.key}' with your API key."
     )
+
+REPL_HISTORY_PATH = SETTINGS_DIR / "history.txt"
+MAX_HISTORY = 3000

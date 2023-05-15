@@ -18,7 +18,7 @@ from __future__ import annotations
 import copy
 import logging
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import attrs
 import openai
@@ -35,11 +35,8 @@ from smartgpt.datatypes import (
     Settings,
 )
 from smartgpt.logger import default_logger, get_logger
+from smartgpt.repl import repl
 from smartgpt.user_profile import SETTINGS_PATH
-from smartgpt.util import REPLColors
-
-USER_PREFIX = REPLColors.OKGREEN + "> " + REPLColors.ENDC
-GPT_PREFIX = REPLColors.OKBLUE + "\n" + REPLColors.ENDC
 
 
 @attrs.define
@@ -159,35 +156,6 @@ class SmartGPT:
     def __attrs_post_init__(self) -> None:
         self.logger = get_logger()
         self.logger.setLevel(logging.DEBUG if self.debug else logging.INFO)
-
-    def repl(self) -> None:
-        """Starts the Read-Eval-Print-Loop (REPL) for interaction with the model
-
-        This function runs indefinitely until the session is manually terminated.
-        """
-        while True:
-            _, _ = self.repl_iteration()
-
-    def repl_iteration(self, quiet=False) -> Tuple[str, str]:
-        """Executes a single pass of the Read-Eval-Print-Loop (REPL)
-
-        Args:
-            quiet:
-                If true, the function will not print the model's response. Default is
-                False.
-
-        Returns:
-            Tuple[str, str]:
-                The user's prompt and the model's response.
-        """
-        prompt = input(USER_PREFIX)
-
-        response_message = self.create_response(prompt)
-
-        if not quiet:
-            print(GPT_PREFIX + response_message.content + "\n")
-
-        return prompt, response_message.content
 
     def create_response(self, prompt: str) -> Message:
         """
@@ -315,3 +283,6 @@ class SmartGPT:
             ],
             debug=settings.debug,
         )
+
+    def repl(self) -> None:
+        repl(self)

@@ -38,6 +38,7 @@ class Settings:
     mode: Mode
     credentials: Credentials
     debug: bool
+    vi_mode: bool
 
     @property
     def num_agents(self) -> int:
@@ -64,13 +65,14 @@ class Settings:
     @classmethod
     def default(cls) -> Settings:
         return cls(
-            generator_temps=[0.5, 0.5, 0.5],
+            generator_temps=[0.7, 0.7, 0.7],
             researcher_temp=0.5,
             resolver_temp=0.5,
             model="gpt-4",
             mode=Mode.RESOLVER,
             credentials=Credentials.dummy(),
             debug=False,
+            vi_mode=False,
         )
 
 
