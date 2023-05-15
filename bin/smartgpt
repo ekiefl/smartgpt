@@ -23,7 +23,7 @@ def main(args: argparse.Namespace) -> None:
 
 def print_settings_file_and_exit() -> None:
     print(f"The contents of {SETTINGS_PATH}:\n")
-    print(open(SETTINGS_PATH).read())
+    print(color_text(open(SETTINGS_PATH).read(), color="cyan"))
     sys.exit()
 
 
