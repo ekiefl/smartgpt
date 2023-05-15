@@ -86,7 +86,7 @@ class Settings:
         return cattrs.structure(data, cls)
 
     @classmethod
-    def default(cls) -> Settings:
+    def fallback(cls) -> Settings:
         return cls(
             generator_temps=[0.7, 0.7, 0.7],
             researcher_temp=0.5,
@@ -131,34 +131,6 @@ class Mode(strenum.StrEnum):
     ZERO_SHOT = strenum.auto()
     STEP_BY_STEP = strenum.auto()
     RESOLVER = strenum.auto()
-
-
-@attrs.define(frozen=True)
-class GPTConfig:
-    """Configuration for the GPT model.
-
-    Attributes:
-        model:
-            The GPT model to use (default is 'gpt-4').
-        credentials:
-            Credentials for accessing the model.
-        mode:
-            The mode of interaction.
-    """
-
-    model: str = attrs.field(default="gpt-4")
-    credentials: Credentials = attrs.field(default=Settings.default().credentials)
-    mode: Mode = attrs.field(default=Mode.ZERO_SHOT)
-
-    @classmethod
-    def default(cls) -> GPTConfig:
-        """Factory method to create a default GPTConfig.
-
-        Returns:
-            GPTConfig:
-                A GPTConfig instance with default values.
-        """
-        return cls()
 
 
 class Role(strenum.StrEnum):

@@ -9,9 +9,14 @@ SETTINGS_DIR.mkdir(exist_ok=True)
 
 SETTINGS_PATH = SETTINGS_DIR / "settings.yaml"
 if not SETTINGS_PATH.exists():
-    Settings.default().save(SETTINGS_PATH)
+    Settings.fallback().save(SETTINGS_PATH)
 
-settings = Settings.load(SETTINGS_PATH)
+
+def get_settings() -> Settings:
+    return Settings.load(SETTINGS_PATH)
+
+
+settings = get_settings()
 if settings.credentials == (dummy := Credentials.dummy()):
     print(
         SmartGPTError(

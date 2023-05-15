@@ -1,8 +1,6 @@
-import smartgpt.user_profile
-from smartgpt.chat import Agent, SmartGPT
+from smartgpt.chat import Agent, GPTConfig, SmartGPT
 from smartgpt.datatypes import (
     Credentials,
-    GPTConfig,
     Message,
     Mode,
     Response,
@@ -10,5 +8,6 @@ from smartgpt.datatypes import (
     Settings,
     Verbosity,
 )
+from smartgpt.user_profile import get_settings, settings
 
-__version__ = "0.1.0"
+__version__ = "0.1.2.1"

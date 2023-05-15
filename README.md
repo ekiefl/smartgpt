@@ -1,15 +1,44 @@
 # SmartGPT
 
-SmartGPT as explained in this video by AIExplained: https://www.youtube.com/watch?v=wVzuvf9D9BU
+<img src="assets/alg.jpg" width="600" />
 
-## Installation
+SmartGPT uses a collection of GPT-4 agents, each with specific roles, to produce demonstrably higher quality responses than vanilla GPT-4. It also leverages chain-of-thought prompt engineering to boost performance.
 
-<details><summary>Install option (1): PIP</summary>
+SmartGPT was conceived by AIExplained in his video: https://www.youtube.com/watch?v=wVzuvf9D9BU.
+
+## Explanation of the algorithm
+
+In essence, SmartGPT works by generating a diversity of responses to a prompt, and then scrutinizing and improving these responses via agents with dedicated roles.
+
+There are currently 3 agent roles: **Generators**, **Reseachers**, and **Resolvers**.
+
+- **Generators** produce zero-shot responses to a prompt (with chain-of-thought prompt wrappings).
+
+- **Researchers** take in collections of generator responses as part of their prompt, and are tasked with identifying the strengths and weaknesses of the responses.
+
+- **Resolvers** take the analysis of a researcher as their prompt, and are tasked with choosing and improving upon the best option.
+
+The prompts for each of these agent types can be found in `smartgpt/prompts`
+
+There is nothing but your creativity preventing a vast expansion of more tailored roles.
+
+## Is it really better? (yes)
 
 FIXME
 
-</details>
+## Requirements
 
+- Python >=3.8
+
+## Installation
+
+The easiest way to install SmartGPT is with pip:
+
+```bash
+pip install smartgpt
+```
+
+If you want to develop for SmartGPT, you'll want to follow these instructions (click the arrow to expand):
 
 <details><summary>Install option (2): Developer</summary>
 
@@ -79,3 +108,51 @@ run_smartgpt
 ```
 
 </details>
+
+## Usage
+
+SmartGPT can be ran from the command line or directly in Python.
+
+### From the command line
+
+After installing, you now have a binary in your `$PATH` called `smartgpt`. This binary creates a REPL where you can interactively chat with the model in zero-shot mode, basic chain-of-through prompt wrapping, or the SmartGPT algorithm.
+
+Definitely run the following command to help you get started. It will guide you through everything you need to know.
+
+```bash
+smartgpt --help
+```
+
+### From the python API
+
+If you have more programmatic intentions, I hope the following scripts give you some inspiration.
+
+Talk with an agent:
+
+```python
+>>> from smartgpt import Agent
+>>> agent = Agent()
+>>> agent.response("Hello there")
+Message(role=<Role.ASSISTANT: 'assistant'>, content='Hello! How can I help you today?')
+>>> agent
+Agent(messages=[{'role': <Role.USER: 'user'>, 'content': 'Hello there'}, {'role': <Role.ASSISTANT: 'assistant'>, 'content': 'Hello! How can I help you today?'}], credentials=Credentials(key=sk-r****v9t6), model='gpt-4', temp=0.5)
+```
+
+Ask a math problem for each of the 3 modes:
+
+```python
+from smartgpt import SmartGPT, get_settings, Verbosity, Mode
+
+settings = get_settings()
+
+models = {
+    "zero shot": SmartGPT.create(settings, Mode.ZERO_SHOT),
+    "chain of thought": SmartGPT.create(settings, Mode.STEP_BY_STEP),
+    "smartgpt": SmartGPT.create(settings, Mode.RESOLVER),
+}
+
+prompt = "How many shoes can fit in a house?"
+
+for name, model in models.items():
+    print(model.create_response(prompt).content)
+```

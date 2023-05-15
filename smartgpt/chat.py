@@ -27,7 +27,6 @@ from openai.error import InvalidRequestError, RateLimitError
 from smartgpt import prompts
 from smartgpt.datatypes import (
     Credentials,
-    GPTConfig,
     Message,
     Mode,
     Response,
@@ -37,7 +36,35 @@ from smartgpt.datatypes import (
 )
 from smartgpt.logger import default_logger, get_logger
 from smartgpt.repl import repl
-from smartgpt.user_profile import SETTINGS_PATH
+from smartgpt.user_profile import get_settings
+
+
+@attrs.define(frozen=True)
+class GPTConfig:
+    """Configuration for the GPT model.
+
+    Attributes:
+        model:
+            The GPT model to use (default is 'gpt-4').
+        credentials:
+            Credentials for accessing the model.
+        mode:
+            The mode of interaction.
+    """
+
+    model: str = attrs.field(default="gpt-4")
+    credentials: Credentials = attrs.field(default=get_settings().credentials)
+    mode: Mode = attrs.field(default=Mode.ZERO_SHOT)
+
+    @classmethod
+    def default(cls) -> GPTConfig:
+        """Factory method to create a default GPTConfig.
+
+        Returns:
+            GPTConfig:
+                A GPTConfig instance with default values.
+        """
+        return cls()
 
 
 @attrs.define
@@ -59,7 +86,7 @@ class Agent:
     """
 
     messages: List[Dict[str, str]] = attrs.field(factory=list)
-    credentials: Credentials = attrs.field(default=Settings.default().credentials)
+    credentials: Credentials = attrs.field(default=get_settings().credentials)
     model: str = attrs.field(default="gpt-4")
     temp: float = attrs.field(default=0.5)
 
@@ -248,9 +275,14 @@ class SmartGPT:
         return response
 
     @classmethod
-    def create(cls, settings: Optional[Settings] = None) -> SmartGPT:
+    def create(
+        cls, settings: Optional[Settings] = None, mode: Optional[Mode] = None
+    ) -> SmartGPT:
         if settings is None:
-            settings = Settings.load(SETTINGS_PATH)
+            settings = get_settings()
+
+        if mode is not None:
+            settings.mode = mode
 
         return cls(
             config=GPTConfig(
