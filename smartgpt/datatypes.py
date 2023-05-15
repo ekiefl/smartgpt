@@ -27,6 +27,7 @@ import yaml
 
 from smartgpt import strenum
 from smartgpt.strenum import StrEnum
+from smartgpt.util import Pathish
 
 cattrs.register_unstructure_hook(
     StrEnum,
