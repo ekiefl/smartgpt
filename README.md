@@ -1,6 +1,6 @@
 # SmartGPT
 
-<img src="assets/alg.jpg" width="600" />
+<img src="assets/alg.jpg"/>
 
 SmartGPT uses a collection of GPT-4 agents, each with specific roles, to produce demonstrably higher quality responses than vanilla GPT-4. It also leverages chain-of-thought prompt engineering to boost performance.
 
