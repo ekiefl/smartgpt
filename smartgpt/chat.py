@@ -1,42 +1,18 @@
-"""This module is a wrapper around OpenAI's GPT model
-
-It defines two main classes, Agent
-and SmartGPT, which together facilitate interactive sessions with the AI model. The
-module supports different modes of interaction, including zero-shot, "step-by-step"
-chain of thought prompt flavoring, and the full "SmartGPT" resolver mode.
-
-Classes:
-    Agent:
-        Represents an interface to the GPT model.
-    SmartGPT:
-        Manages interactive sessions with the AI, supporting different modes of
-        interaction.
-"""
-
 from __future__ import annotations
 
 import copy
 import logging
-import time
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import attrs
-import openai
-from openai.error import InvalidRequestError, RateLimitError
 
 from smartgpt import prompts
-from smartgpt.datatypes import (
-    Credentials,
-    Message,
-    Mode,
-    Response,
-    Role,
-    Settings,
-    Verbosity,
-)
-from smartgpt.logger import default_logger, get_logger
+from smartgpt.datatypes import Mode, Verbosity
+from smartgpt.logger import get_logger
+from smartgpt.message import GPTBot, Message, Role
 from smartgpt.repl import repl
-from smartgpt.user_profile import get_settings
+from smartgpt.settings.credentials import Credentials
+from smartgpt.settings.user import UserSettings
 
 
 @attrs.define(frozen=True)
@@ -53,7 +29,7 @@ class GPTConfig:
     """
 
     model: str = attrs.field(default="gpt-4")
-    credentials: Credentials = attrs.field(default=get_settings().credentials)
+    credentials: Credentials = attrs.field(default=Credentials.default())
     mode: Mode = attrs.field(default=Mode.ZERO_SHOT)
 
     @classmethod
@@ -65,86 +41,6 @@ class GPTConfig:
                 A GPTConfig instance with default values.
         """
         return cls()
-
-
-@attrs.define
-class Agent:
-    """Represents an interface to the GPT model.
-
-    It encapsulates the process of sending messages to the model and receiving
-    responses. The class also handles message history.
-
-    Attributes:
-        messages:
-            A list of messages sent to and received from the model.
-        credentials:
-            Credentials for accessing the model.
-        model:
-            The model to use (default is 'gpt-4').
-        temp:
-            The temperature parameter to use when generating responses.
-    """
-
-    messages: List[Dict[str, str]] = attrs.field(factory=list)
-    credentials: Credentials = attrs.field(default=get_settings().credentials)
-    model: str = attrs.field(default="gpt-4")
-    temp: float = attrs.field(default=0.5)
-
-    def append_message(self, message: Message) -> None:
-        """Appends a message to the current message history.
-
-        Args:
-            message: The message to append.
-        """
-        self.messages.append(attrs.asdict(message))
-
-    def request(self) -> Response:
-        """Sends the current message history to the GPT model via an API request
-
-        The message history includes all previous interactions, which allows the model
-        to generate a response based on the entire conversation context.
-
-        Returns:
-            Response:
-                A Response object that encapsulates the model's response, which includes
-                the generated message, remaining tokens, and other metadata.
-        """
-
-        try:
-            return Response.from_openai_response(
-                openai.ChatCompletion.create(
-                    model=self.model,
-                    messages=self.messages,
-                    api_key=self.credentials.key,
-                )
-            )
-        except RateLimitError:
-            default_logger.info("Hit rate limit. Sleeping for 20 seconds...")
-            time.sleep(20)
-            return self.request()
-        except InvalidRequestError:
-            raise NotImplementedError()
-
-    def response(self, prompt: str) -> Message:
-        """Appends prompt to message history and sends request to the GPT model.
-
-        The model's response is then appended to the message history.
-
-        Args:
-            prompt:
-                The prompt to send to the model.
-
-        Returns:
-            Message:
-                The model's response encapsulated in a Message object.
-        """
-        self.append_message(Message(Role.USER, prompt))
-
-        response = self.request()
-
-        self.append_message(response.message)
-
-        return response.message
 
 
 @attrs.define
@@ -173,10 +69,10 @@ class SmartGPT:
     """
 
     config: GPTConfig
-    main: Agent
-    researcher: Agent
-    resolver: Agent
-    generators: List[Agent]
+    main: GPTBot
+    researcher: GPTBot
+    resolver: GPTBot
+    generators: List[GPTBot]
     verbosity: Verbosity = Verbosity.SOME
 
     logger: logging.Logger = attrs.field(init=False)
@@ -184,7 +80,7 @@ class SmartGPT:
     def __attrs_post_init__(self) -> None:
         self.logger = get_logger(verbosity=self.verbosity)
 
-    def create_response(self, prompt: str) -> Message:
+    def response(self, prompt: str) -> Message:
         """
         Determines the mode of interaction based on the current configuration and
         generates a response from the model accordingly.
@@ -259,12 +155,13 @@ class SmartGPT:
             self.logger.info("Generating response for resolver...")
 
             resolver_prompt = prompts.you_are_a_resolver(
-                candidates, silence_rationale=(self.verbosity != Verbosity.ALL)
+                candidates, silence_rationale=True
             )
             self.logger.debug(f"Resolver prompt:\n{resolver_prompt}")
 
             self.resolver.messages = copy.deepcopy(self.researcher.messages)
             response = self.resolver.response(resolver_prompt)
+            self.logger.debug(f"Resolver response:\n{response.content}")
 
             # Add the prompt and response to the main agent
             self.main.append_message(Message(Role.USER, candidate_prompt))
@@ -276,38 +173,44 @@ class SmartGPT:
 
     @classmethod
     def create(
-        cls, settings: Optional[Settings] = None, mode: Optional[Mode] = None
+        cls,
+        settings: Optional[UserSettings] = None,
+        credentials: Optional[Credentials] = None,
+        mode: Optional[Mode] = None,
     ) -> SmartGPT:
         if settings is None:
-            settings = get_settings()
+            settings = UserSettings.default()
+
+        if credentials is None:
+            credentials = Credentials.default()
 
         if mode is not None:
             settings.mode = mode
 
         return cls(
             config=GPTConfig(
-                credentials=settings.credentials,
+                credentials=credentials,
                 model=settings.model,
                 mode=settings.mode,
             ),
-            main=Agent(
-                credentials=settings.credentials,
+            main=GPTBot(
+                credentials=credentials,
                 model=settings.model,
                 temp=settings.resolver_temp,
             ),
-            researcher=Agent(
-                credentials=settings.credentials,
+            researcher=GPTBot(
+                credentials=credentials,
                 model=settings.model,
                 temp=settings.researcher_temp,
             ),
-            resolver=Agent(
-                credentials=settings.credentials,
+            resolver=GPTBot(
+                credentials=credentials,
                 model=settings.model,
                 temp=settings.resolver_temp,
             ),
             generators=[
-                Agent(
-                    credentials=settings.credentials,
+                GPTBot(
+                    credentials=credentials,
                     model=settings.model,
                     temp=settings.generator_temps[i],
                 )

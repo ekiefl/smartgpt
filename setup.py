@@ -15,7 +15,7 @@ if sys.version_info < (3, 8):
 
 setup(
     name="smartgpt",
-    version="0.1.2.1",
+    version="0.1.3",
     packages=find_packages(),
     scripts=["bin/smartgpt"],
     author_email="kiefl.evan@gmail.com",
@@ -25,6 +25,7 @@ setup(
         "openai",
         "attrs",
         "cattrs",
+        "pandas",
         "pyyaml",
         "prompt_toolkit",
     ],

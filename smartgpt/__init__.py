@@ -1,13 +1,6 @@
-from smartgpt.chat import Agent, GPTConfig, SmartGPT
-from smartgpt.datatypes import (
-    Credentials,
-    Message,
-    Mode,
-    Response,
-    Role,
-    Settings,
-    Verbosity,
-)
-from smartgpt.user_profile import get_settings, settings
+from smartgpt.chat import GPTConfig, SmartGPT
+from smartgpt.datatypes import Mode, Verbosity
+from smartgpt.message import GPTBot, Message, Role
+from smartgpt.settings import Credentials, UserSettings
 
-__version__ = "0.1.2.1"
+__version__ = "0.1.3"

@@ -4,8 +4,11 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.history import FileHistory
 
-from smartgpt.datatypes import Message, Settings
-from smartgpt.user_profile import MAX_HISTORY, REPL_HISTORY_PATH, SETTINGS_PATH
+from smartgpt.message import Message
+from smartgpt.settings.constants import REPL_HISTORY_PATH
+from smartgpt.settings.user import UserSettings
+
+MAX_HISTORY = 3000
 
 
 class LimitedFileHistory(FileHistory):
@@ -30,7 +33,7 @@ session: PromptSession = PromptSession(
     history=LimitedFileHistory(str(REPL_HISTORY_PATH), MAX_HISTORY),
     multiline=True,
     wrap_lines=True,
-    vi_mode=Settings.load(SETTINGS_PATH).vi_mode,
+    vi_mode=UserSettings.default().vi_mode,
 )
 
 
@@ -43,20 +46,20 @@ USER_PREFIX = FormattedText(
 
 
 class Model(Protocol):
-    def create_response(self, prompt: str) -> Message:
+    def response(self, prompt: str) -> Message:
         ...
 
 
-def repl(model: Model) -> None:
+def repl(model: Model, quiet: bool = False) -> None:
     """Starts the Read-Eval-Print-Loop (REPL) for interaction with a model
 
     This function runs indefinitely until the session is manually terminated.
     """
     while True:
-        _, _ = repl_iteration(model)
+        _, _ = repl_iteration(model, quiet=quiet)
 
 
-def repl_iteration(model: Model, quiet=False) -> Tuple[str, str]:
+def repl_iteration(model: Model, quiet: bool = True) -> Tuple[str, str]:
     """Executes a single pass of the Read-Eval-Print-Loop (REPL)
 
     Args:
@@ -70,7 +73,7 @@ def repl_iteration(model: Model, quiet=False) -> Tuple[str, str]:
     """
     prompt = session.prompt(USER_PREFIX)
 
-    response_message = model.create_response(prompt)
+    response_message = model.response(prompt)
 
     if not quiet:
         print(f"\n{response_message.content}\n")
