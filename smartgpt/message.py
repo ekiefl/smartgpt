@@ -6,7 +6,7 @@ from typing import Dict, List
 import attrs
 import cattrs
 import openai
-from openai.error import InvalidRequestError, RateLimitError
+from openai.error import APIError, InvalidRequestError, RateLimitError
 
 from smartgpt import strenum
 from smartgpt.logger import default_logger
@@ -125,6 +125,10 @@ class GPTBot:
             )
         except RateLimitError:
             default_logger.info("Hit rate limit. Sleeping for 20 seconds...")
+            time.sleep(20)
+            return self.request()
+        except APIError:
+            default_logger.info("Potentially bad gateway. Sleeping for 20 seconds...")
             time.sleep(20)
             return self.request()
         except InvalidRequestError:
