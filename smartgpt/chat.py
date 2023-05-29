@@ -80,7 +80,7 @@ class SmartGPT:
     def __attrs_post_init__(self) -> None:
         self.logger = get_logger(verbosity=self.verbosity)
 
-    def create_response(self, prompt: str) -> Message:
+    def response(self, prompt: str) -> Message:
         """
         Determines the mode of interaction based on the current configuration and
         generates a response from the model accordingly.
@@ -172,38 +172,44 @@ class SmartGPT:
 
     @classmethod
     def create(
-        cls, settings: Optional[UserSettings] = None, mode: Optional[Mode] = None
+        cls,
+        settings: Optional[UserSettings] = None,
+        credentials: Optional[Credentials] = None,
+        mode: Optional[Mode] = None,
     ) -> SmartGPT:
         if settings is None:
             settings = UserSettings.default()
+
+        if credentials is None:
+            credentials = Credentials.default()
 
         if mode is not None:
             settings.mode = mode
 
         return cls(
             config=GPTConfig(
-                credentials=settings.credentials,
+                credentials=credentials,
                 model=settings.model,
                 mode=settings.mode,
             ),
             main=GPTBot(
-                credentials=settings.credentials,
+                credentials=credentials,
                 model=settings.model,
                 temp=settings.resolver_temp,
             ),
             researcher=GPTBot(
-                credentials=settings.credentials,
+                credentials=credentials,
                 model=settings.model,
                 temp=settings.researcher_temp,
             ),
             resolver=GPTBot(
-                credentials=settings.credentials,
+                credentials=credentials,
                 model=settings.model,
                 temp=settings.resolver_temp,
             ),
             generators=[
                 GPTBot(
-                    credentials=settings.credentials,
+                    credentials=credentials,
                     model=settings.model,
                     temp=settings.generator_temps[i],
                 )

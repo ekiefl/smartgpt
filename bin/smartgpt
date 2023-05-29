@@ -6,20 +6,22 @@ import textwrap
 from smartgpt.chat import SmartGPT
 from smartgpt.datatypes import Mode, Verbosity
 from smartgpt.settings.constants import SETTINGS_PATH
+from smartgpt.settings.credentials import Credentials
 from smartgpt.settings.user import UserSettings
 
 
 def main(args: argparse.Namespace) -> None:
     settings = override_settings_with_CLI_args(UserSettings.default(), args)
+    credentials = Credentials.default()
 
-    print_settings(settings)
+    print_settings(settings, credentials)
 
     app = SmartGPT.create(settings)
     app.repl()
 
 
-def print_settings(settings: UserSettings) -> None:
-    print(settings)
+def print_settings(settings: UserSettings, credentials: Credentials) -> None:
+    print(f"{settings}\n    {credentials}\n")
 
 
 def override_settings_with_CLI_args(

@@ -46,7 +46,7 @@ USER_PREFIX = FormattedText(
 
 
 class Model(Protocol):
-    def create_response(self, prompt: str) -> Message:
+    def response(self, prompt: str) -> Message:
         ...
 
 
@@ -73,7 +73,7 @@ def repl_iteration(model: Model, quiet: bool = True) -> Tuple[str, str]:
     """
     prompt = session.prompt(USER_PREFIX)
 
-    response_message = model.create_response(prompt)
+    response_message = model.response(prompt)
 
     if not quiet:
         print(f"\n{response_message.content}\n")

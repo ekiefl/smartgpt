@@ -127,32 +127,34 @@ smartgpt --help
 
 If you have more programmatic intentions, I hope the following scripts give you some inspiration.
 
-Talk with an agent:
+Talk with a normal GPT bot:
 
 ```python
->>> from smartgpt import Agent
->>> agent = Agent()
->>> agent.response("Hello there")
+>>> from smartgpt import GPTBot
+>>> bot = GPTBot()
+>>> bot.response("Hello there")
 Message(role=<Role.ASSISTANT: 'assistant'>, content='Hello! How can I help you today?')
->>> agent
-Agent(messages=[{'role': <Role.USER: 'user'>, 'content': 'Hello there'}, {'role': <Role.ASSISTANT: 'assistant'>, 'content': 'Hello! How can I help you today?'}], credentials=Credentials(key=sk-r****v9t6), model='gpt-4', temp=0.5)
+>>> bot
+GPTBot(messages=[{'role': <Role.USER: 'user'>, 'content': 'Hello there'}, {'role': <Role.ASSISTANT: 'assistant'>, 'content': 'Hello! How can I help you today?'}], credentials=Credentials(key=sk-r****v9t6), model='gpt-4', temp=0.5)
 ```
 
-Ask a math problem for each of the 3 modes:
+Talk with SmartGPT bots:
 
 ```python
-from smartgpt import SmartGPT, get_settings, Verbosity, Mode
+from smartgpt import SmartGPT, Mode
 
-settings = get_settings()
+# Same as `GPTBot()`
+dumb_bot = SmartGPT.create(mode=Mode.ZERO_SHOT)
 
-models = {
-    "zero shot": SmartGPT.create(settings, Mode.ZERO_SHOT),
-    "chain of thought": SmartGPT.create(settings, Mode.STEP_BY_STEP),
-    "smartgpt": SmartGPT.create(settings, Mode.RESOLVER),
-}
+# Use chain-of-thought prompt engineering
+smart_bot = SmartGPT.create(mode=Mode.STEP_BY_STEP)
+
+# Use the SmartGPT implementation
+smartest_bot = SmartGPT.create(mode=Mode.RESOLVER)
 
 prompt = "How many shoes can fit in a house?"
 
-for name, model in models.items():
-    print(model.create_response(prompt).content)
+dumb_bot.response(prompt)
+smart_bot.response(prompt)
+smartest_bot.response(prompt)
 ```

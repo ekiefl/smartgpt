@@ -9,7 +9,6 @@ import yaml
 
 from smartgpt.datatypes import Mode, Verbosity
 from smartgpt.settings.constants import SETTINGS_PATH, USER_DIR
-from smartgpt.settings.credentials import Credentials
 from smartgpt.util import Pathish
 
 
@@ -20,7 +19,6 @@ class UserSettings:
     resolver_temp: float
     model: str
     mode: Mode
-    credentials: Credentials
     verbosity: Verbosity
     vi_mode: bool
 
@@ -76,7 +74,6 @@ class UserSettings:
             resolver_temp=0.5,
             model="gpt-4",
             mode=Mode.RESOLVER,
-            credentials=Credentials.dummy(),
             verbosity=Verbosity.SOME,
             vi_mode=False,
         )

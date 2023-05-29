@@ -54,10 +54,11 @@ class Credentials:
             USER_DIR.mkdir(exist_ok=True)
             cls.dummy().save(CREDENTIALS_PATH)
 
-        if cls.load(CREDENTIALS_PATH) == DUMMY_KEY:
+        if cls.load(CREDENTIALS_PATH).key == DUMMY_KEY:
             error = SmartGPTError(
                 f"Almost! In order to use Smart-GPT, you need your OpenAI API key. Get "
                 f"yours at https://platform.openai.com/account/api-keys, then open "
                 f"'{CREDENTIALS_PATH}' and replace '{DUMMY_KEY}' with your API key."
             )
-            sys.exit(error.__repr__())
+            print(error)
+            sys.exit()
