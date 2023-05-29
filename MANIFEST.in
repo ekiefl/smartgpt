@@ -1,0 +1,1 @@
+include smartgpt/data/questions/*.csv
