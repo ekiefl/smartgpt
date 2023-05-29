@@ -155,12 +155,13 @@ class SmartGPT:
             self.logger.info("Generating response for resolver...")
 
             resolver_prompt = prompts.you_are_a_resolver(
-                candidates, silence_rationale=(self.verbosity != Verbosity.ALL)
+                candidates, silence_rationale=True
             )
             self.logger.debug(f"Resolver prompt:\n{resolver_prompt}")
 
             self.resolver.messages = copy.deepcopy(self.researcher.messages)
             response = self.resolver.response(resolver_prompt)
+            self.logger.debug(f"Resolver response:\n{response.content}")
 
             # Add the prompt and response to the main agent
             self.main.append_message(Message(Role.USER, candidate_prompt))
