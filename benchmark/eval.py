@@ -1,9 +1,14 @@
-import argparse
-from typing import Any, Dict, List, Optional, Tuple
+from __future__ import annotations
 
+import argparse
+import time
+from pathlib import Path
+from typing import List, Optional, Tuple
+
+import attrs
 import pandas as pd
 
-from smartgpt import GPTBot, Message, Mode, Role, SmartGPT, UserSettings, Verbosity
+from smartgpt import GPTBot, Mode, SmartGPT, UserSettings, Verbosity
 from smartgpt.data import get_prompt, tests
 
 
@@ -50,7 +55,14 @@ def create_competitors(settings: UserSettings) -> Tuple[SmartGPT, SmartGPT, Smar
 
 def get_responses(prompt: str, settings: UserSettings) -> Tuple[str, ...]:
     """Returns fresh bot responses for gpt, chain-of-though gpt, and smartgpt"""
-    return tuple(bot.response(prompt).content for bot in create_competitors(settings))
+    while True:
+        try:
+            return tuple(
+                bot.response(prompt).content for bot in create_competitors(settings)
+            )
+        except:
+            print("Uncaught error raised. Sleeping for 20 and trying again.")
+            time.sleep(20)
 
 
 def create_grader() -> GPTBot:
@@ -78,7 +90,14 @@ def get_grader_prompt(response: str, answer: str) -> str:
 
 def is_correct(response: str, answer: str) -> bool:
     grader = create_grader()
-    grade = grader.response(get_grader_prompt(response, answer)).content
+
+    while True:
+        try:
+            grade = grader.response(get_grader_prompt(response, answer)).content
+            break
+        except:
+            print("Uncaught error raised. Sleeping for 20 and trying again.")
+            time.sleep(20)
 
     if grade == "correct":
         return True
@@ -90,60 +109,76 @@ def is_correct(response: str, answer: str) -> bool:
         return False
 
 
+def get_initial_scoresheet(path: str) -> pd.DataFrame:
+    if Path(path).exists():
+        return pd.read_csv(path, sep="\t")
+
+    return pd.DataFrame({}, columns=list(attrs.fields_dict(Entry).keys()))
+
+
+def save_entry_to_scoresheet(
+    scoresheet: pd.DataFrame, entry: Entry, output: str
+) -> pd.DataFrame:
+    scoresheet = pd.concat(
+        [scoresheet, pd.DataFrame(attrs.asdict(entry), index=[0])], ignore_index=True
+    )
+    scoresheet.to_csv(Path(output), sep="\t", index=False)
+    return scoresheet
+
+
+@attrs.define
+class Entry:
+    subject: str
+    question_idx: int
+    question: str
+    A: str
+    B: str
+    C: str
+    D: str
+    answer: str
+    prompt: str
+    gpt4_correct: bool
+    gpt4_response: str
+    gpt4cot_correct: bool
+    gpt4cot_response: str
+    smartgpt_correct: bool
+    smartgpt_response: str
+    manually_verified: bool
+
+
 def main(args):
     settings = override_settings_with_CLI_args(UserSettings.default(), args)
+    scoresheet = get_initial_scoresheet(args.output)
 
-    score_sheet: Dict[str, List[Any]] = {
-        "subject": [],
-        "question_idx": [],
-        "question": [],
-        "A": [],
-        "B": [],
-        "C": [],
-        "D": [],
-        "answer": [],
-        "prompt": [],
-        "gpt4_correct": [],
-        "gpt4cot_correct": [],
-        "smartgpt_correct": [],
-        "gpt4_response": [],
-        "gpt4cot_response": [],
-        "smartgpt_response": [],
-        "manually_verified": [],
-    }
-
-    questions_frame = get_questions(args.N)
+    if args.subject:
+        questions_frame = get_questions(args.N, [args.subject])
+    else:
+        questions_frame = get_questions(args.N)
 
     for _, question in questions_frame.iterrows():
         prompt = get_prompt(question)
         gpt, cot, smart = get_responses(prompt, settings)
 
-        # Copy-paste some info from the question Series
-        score_sheet["subject"].append(question["subject"])
-        score_sheet["question_idx"].append(question["question_idx"])
-        score_sheet["question"].append(question["question"])
-        score_sheet["A"].append(question["A"])
-        score_sheet["B"].append(question["B"])
-        score_sheet["C"].append(question["C"])
-        score_sheet["D"].append(question["D"])
-        score_sheet["answer"].append(question["answer"])
+        entry = Entry(
+            subject=question["subject"],
+            question_idx=question["question_idx"],
+            question=question["question"],
+            A=question["A"],
+            B=question["B"],
+            C=question["C"],
+            D=question["D"],
+            answer=question["answer"],
+            prompt=prompt,
+            gpt4_response=gpt,
+            gpt4cot_response=cot,
+            smartgpt_response=smart,
+            gpt4_correct=is_correct(gpt, question["answer"]),
+            gpt4cot_correct=is_correct(cot, question["answer"]),
+            smartgpt_correct=is_correct(smart, question["answer"]),
+            manually_verified=False,
+        )
 
-        # Add the prompt and responses
-        score_sheet["prompt"].append(prompt)
-        score_sheet["gpt4_response"].append(gpt)
-        score_sheet["gpt4cot_response"].append(cot)
-        score_sheet["smartgpt_response"].append(smart)
-
-        # Grade each response
-        score_sheet["gpt4_correct"].append(is_correct(gpt, question["answer"]))
-        score_sheet["gpt4cot_correct"].append(is_correct(cot, question["answer"]))
-        score_sheet["smartgpt_correct"].append(is_correct(smart, question["answer"]))
-
-        # Correctness has not been manually verified
-        score_sheet["manually_verified"].append(False)
-
-    score_sheet = pd.DataFrame(score_sheet)
-    score_sheet.to_csv(args.output, sep="\t", index=False)
+        scoresheet = save_entry_to_scoresheet(scoresheet, entry, args.output)
 
 
 if __name__ == "__main__":
@@ -151,6 +186,15 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True, help="Output TSV of scoresheet")
     parser.add_argument(
         "-N", required=True, type=int, help="The number of questions per subject"
+    )
+    parser.add_argument(
+        "--subject",
+        required=False,
+        default=None,
+        help=(
+            "If not provided, all subjects are used. For available subjects see "
+            "`from smartgpt.data import tests; tests.keys()`"
+        ),
     )
     parser.add_argument(
         "--verbosity",
