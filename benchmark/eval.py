@@ -126,6 +126,17 @@ def save_entry_to_scoresheet(
     return scoresheet
 
 
+def should_skip(
+    question: pd.Series,
+    scoresheet: pd.DataFrame,
+) -> bool:
+    joint_idx = question["subject"].astype(str) + question["question_idx"].astype(str)
+    completed = scoresheet["subject"].astype(str) + scoresheet["question_idx"].astype(
+        str
+    )
+    return (joint_idx == completed).any()
+
+
 @attrs.define
 class Entry:
     subject: str
@@ -156,6 +167,12 @@ def main(args):
         questions_frame = get_questions(args.N)
 
     for _, question in questions_frame.iterrows():
+        if should_skip(question, scoresheet):
+            print(
+                f"Skipping question idx {question['question_idx']} for subject {question['subject']}"
+            )
+            continue
+
         prompt = get_prompt(question)
         gpt, cot, smart = get_responses(prompt, settings)
 
