@@ -130,7 +130,7 @@ def should_skip(
     question: pd.Series,
     scoresheet: pd.DataFrame,
 ) -> bool:
-    joint_idx = question["subject"].astype(str) + question["question_idx"].astype(str)
+    joint_idx = str(question["subject"]) + str(question["question_idx"])
     completed = scoresheet["subject"].astype(str) + scoresheet["question_idx"].astype(
         str
     )
