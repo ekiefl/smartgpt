@@ -21,7 +21,9 @@ def _format_subject(subject: str) -> str:
 def get_prompt(question: pd.Series) -> str:
     prompt = (
         f"Please choose the most correct answer for the following multiple choice "
-        f"question about {_format_subject(question['subject'])}. {question['question']}\n\n"
+        f"question about {_format_subject(question['subject'])}. Clearly indicate "
+        f"your selected option (A, B, C, or D) at the end of your response. "
+        f"{question['question']}\n\n"
     )
 
     for option in ["A", "B", "C", "D"]:
