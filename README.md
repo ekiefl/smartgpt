@@ -6,12 +6,13 @@ SmartGPT uses a collection of GPT-4 agents, each with specific roles, to produce
 
 SmartGPT was conceived by AIExplained in his video: https://www.youtube.com/watch?v=wVzuvf9D9BU.
 
-
 ## Is it really better? (yes)
 
 ### All subjects
 
 <img src="assets/all_subjects.png"/>
+
+[Here is the scoresheet](https://github.com/ekiefl/smartgpt/blob/eb3a362176e4177a3b2e91f8af905f95a025c2ce/benchmark/all_subjects_results.txt)
 
 Above are the results from three independent tests, where each test is composed of 57 questions, each from a distinct subject matter (from the MMLU test suite). I couldn't afford the number of tokens that would be required to prove statistical significance, however **if people want to donate their API keys, I'm happy to continue the experiment**.
 
@@ -22,6 +23,8 @@ Now diving into individual subject matters.
 ### College physics
 
 <img src="assets/college_physics_results.png"/>
+
+[Here is the scoresheet](https://github.com/ekiefl/smartgpt/blob/eb3a362176e4177a3b2e91f8af905f95a025c2ce/benchmark/college_physics_results.txt)
 
 Above are the results of a 20-question college-level physics exam (again, taken form the MMLU test suite). SmartGPT absolutely hammers it home with 90%, versus 65% for vanilla GPT-4. I have manually verified each answer. I don't know what else to say here but wow.
 
