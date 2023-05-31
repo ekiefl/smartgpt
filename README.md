@@ -6,6 +6,68 @@ SmartGPT uses a collection of GPT-4 agents, each with specific roles, to produce
 
 SmartGPT was conceived by AIExplained in his video: https://www.youtube.com/watch?v=wVzuvf9D9BU.
 
+
+## Is it really better? (yes)
+
+### All subjects
+
+<img src="assets/all_subjects.png"/>
+
+Above are the results from three independent tests, where each test is composed of 57 questions, each from a distinct subject matter (from the MMLU test suite). I couldn't afford the number of tokens that would be required to prove statistical significance, however **if people want to donate their API keys, I'm happy to continue the experiment**.
+
+Overall, it is quite impressive, where **in one case SmartGPT scored 91% on a 57 question all-subjects exam**.
+
+Now diving into individual subject matters.
+
+### College physics
+
+<img src="assets/college_physics_results.png"/>
+
+Above are the results of a 20-question college-level physics exam (again, taken form the MMLU test suite). SmartGPT absolutely hammers it home with 90%, versus 65% for vanilla GPT-4. I don't know what else to say here but wow.
+
+### Formal logic
+
+TODO
+
+### Response quality is superior
+
+It is also important to consider the quality of answers, even when all models get the question right. For example consider the question:
+
+>_Find all zeros in the indicated finite field of the given polynomial with coefficients in that field. x^5 + 3x^3 + x^2 + 2x in Z_5.  
+A. 0  
+B. 1  
+C. 0,1  
+D. 0,4_
+
+GPT-4 response:
+
+> D. 0,4
+
+SmartGPT response:
+
+> First, recall that Z_5 is the finite field with 5 elements {0, 1, 2, 3, 4}, and addition and multiplication are performed modulo 5. We want to find the zeros (roots) of the polynomial x^5 + 3x^3 + x^2 + 2x in Z_5, that is, we want to find all the elements a in Z_5 such that f(a) = 0, where f(x) = x^5 + 3x^3 + x^2 + 2x.
+> 
+> Let's test each element of Z_5:
+> 
+> 1. For x = 0:
+> f(0) = 0^5 + 3(0)^3 + (0)^2 + 2(0) = 0. So 0 is a root.
+> 
+> 2. For x = 1:
+> f(1) = 1^5 + 3(1)^3 + (1)^2 + 2(1) = 1 + 3 + 1 + 2 = 7 ‚â° 2 (mod 5). 1 is not a root.
+> 
+> 3. For x = 2:
+> f(2) = 2^5 + 3(2)^3 + (2)^2 + 2(2) = 32 + 3(8) + 4 + 4 ‚â° 32 + 24 + 8 (mod 5) ‚â° 64 (mod 5) ‚â° 4 (mod 5). 2 is not a root.
+> 
+> 4. For x = 3:
+> f(3) = 3^5 + 3(3)^3 + (3)^2 + 2(3) = 243 + 3(27) + 9 + 6 ‚â° 243 + 81 + 15 (mod 5) ‚â° 339 (mod 5) ‚â° 4 (mod 5). 3 is not a root.
+> 
+> 5. For x = 4:
+> f(4) = 4^5 + 3(4)^3 + (4)^2 + 2(4) = 1024 + 3(64) + 16 + 8 ‚â° 1024 + 192 + 24 (mod 5) ‚â° 1240 (mod 5) ‚â° 0 (mod 5). 4 is a root.
+> 
+> So the zeros of the polynomial in Z_5 are 0 and 4.
+> 
+> Answer: D. 0, 4
+
 ## Explanation of the algorithm
 
 In essence, SmartGPT works by generating a diversity of responses to a prompt, and then scrutinizing and improving these responses via agents with dedicated roles.
@@ -21,10 +83,6 @@ There are currently 3 agent roles: **Generators**, **Reseachers**, and **Resolve
 The prompts for each of these agent types can be found in `smartgpt/prompts`
 
 There is nothing but your creativity preventing a vast expansion of more tailored roles.
-
-## Is it really better? (yes)
-
-FIXME
 
 ## Requirements
 
