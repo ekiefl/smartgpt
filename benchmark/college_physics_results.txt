@@ -53,7 +53,7 @@ Step 4: Check for the next possible constructive interference wavelength.
 
 Now let's try n = 3: λ = 1500 nm / 3 = 500 nm, which is within the visible range. Therefore, the most strongly reflected wavelength is 500 nm.
 
-Answer: A. 500 nm"	False
+Answer: A. 500 nm"	True
 college_physics	2	Which of the following is true about any system that undergoes a reversible thermodynamic process?	There are no changes in the internal energy of the system.	The temperature of the system remains constant during the process.	The entropy of the system and its environment remains unchanged.	The entropy of the system and its environment must increase.	C	"Please choose the most correct answer for the following multiple choice question about college physics. Which of the following is true about any system that undergoes a reversible thermodynamic process?
 
 A. There are no changes in the internal energy of the system.
@@ -72,7 +72,7 @@ D. The entropy of the system and its environment must increase. This statement i
 
 Therefore, the correct answer is C. The entropy for the system and its environment remains unchanged during a reversible thermodynamic process."	"In a reversible thermodynamic process, the system and its surroundings can be returned to their initial states without leaving any lasting effect. Internal energy can change during the process, as work can be done on or by the system. The temperature of the system does not necessarily remain constant; it depends on the type of reversible process, such as isothermal or adiabatic expansion. The entropy of the system and its environment remains unchanged in a reversible process, as any infinitesimal changes in entropy cancel each other out, maintaining the total entropy. In contrast, the entropy of the system and its environment increases in an irreversible process.
 
-Therefore, the correct answer is: C. The entropy of the system and its environment remains unchanged during a reversible thermodynamic process."	False
+Therefore, the correct answer is: C. The entropy of the system and its environment remains unchanged during a reversible thermodynamic process."	True
 college_physics	3	The best type of laser with which to do spectroscopy over a range of visible wavelengths is	a dye laser	a helium-neon laser	an excimer laser	a ruby laser	A	"Please choose the most correct answer for the following multiple choice question about college physics. The best type of laser with which to do spectroscopy over a range of visible wavelengths is
 
 A. a dye laser
@@ -99,7 +99,7 @@ D. A ruby laser emits a single, specific wavelength of light, typically at 694.3
 
 Based on these descriptions, the most correct answer for the question is:
 
-A. a dye laser"	False
+A. a dye laser"	True
 college_physics	4	Excited states of the helium atom can be characterized as para- (antiparallel electron spins) and ortho- (parallel electron spins). The observation that an ortho- state has lower energy than the corresponding para- state can be understood in terms of which of the following?	The Heisenberg uncertainty principle	The Pauli exclusion principle	The Bohr model of the atom	Nuclear hyperfine coupling	B	"Please choose the most correct answer for the following multiple choice question about college physics. Excited states of the helium atom can be characterized as para- (antiparallel electron spins) and ortho- (parallel electron spins). The observation that an ortho- state has lower energy than the corresponding para- state can be understood in terms of which of the following?
 
 A. The Heisenberg uncertainty principle
@@ -124,7 +124,7 @@ D. Nuclear hyperfine coupling deals with the interaction between the magnetic fi
 
 Therefore, the most correct answer to this question is:
 
-B. The Pauli exclusion principle"	False
+B. The Pauli exclusion principle"	True
 college_physics	5	Which of the following gives the total spin quantum number of the electrons in the ground state of neutral nitrogen (Z = 7)?	1/2	1	3/2	5/2	C	"Please choose the most correct answer for the following multiple choice question about college physics. Which of the following gives the total spin quantum number of the electrons in the ground state of neutral nitrogen (Z = 7)?
 
 A. 1/2
@@ -156,7 +156,7 @@ Total spin (S) = 1/2 (from first 2p electron) + 1/2 (from second 2p electron) + 
 
 So, the most correct answer for the total spin quantum number of the electrons in the ground state of neutral nitrogen is:
 
-C. 3/2"	False
+C. 3/2"	True
 college_physics	6	Consider three identical, ideal capacitors. The first capacitor is charged to a voltage and then disconnected from the battery. The other two capacitors, initially uncharged and connected in series, are then connected across the first capacitor. What is the final voltage on the first capacitor?	V_0/5	V_0/3	V_0/2	2V_0/3	D	"Please choose the most correct answer for the following multiple choice question about college physics. Consider three identical, ideal capacitors. The first capacitor is charged to a voltage and then disconnected from the battery. The other two capacitors, initially uncharged and connected in series, are then connected across the first capacitor. What is the final voltage on the first capacitor?
 
 A. V_0/5
@@ -215,7 +215,7 @@ Step 3: Solve for the final voltage V_final:
 V_final = (C * V_0) / (3C/2)
 V_final = (2 * V_0) / 3
 
-Therefore, the final voltage on the first capacitor is 2V_0/3."	False
+Therefore, the final voltage on the first capacitor is 2V_0/3."	True
 college_physics	7	Protons used in cancer therapy are typically accelerated to about 0.6c. How much work must be done on a particle of mass m in order for it to reach this speed, assuming it starts at rest?	0.25mc^2	0.60mc^2	0.67mc^2	1.25mc^2	A	"Please choose the most correct answer for the following multiple choice question about college physics. Protons used in cancer therapy are typically accelerated to about 0.6c. How much work must be done on a particle of mass m in order for it to reach this speed, assuming it starts at rest?
 
 A. 0.25mc^2
@@ -264,7 +264,7 @@ K = (γ - 1)mc^2
 K ≈ (1.25 - 1)mc^2
 K ≈ 0.25mc^2
 
-Thus, the work done on a particle of mass m to accelerate it to a speed of 0.6c is approximately 0.25mc^2."	False
+Thus, the work done on a particle of mass m to accelerate it to a speed of 0.6c is approximately 0.25mc^2."	True
 college_physics	8	De Broglie hypothesized that the linear momentum and wavelength of a free massive particle are related by which of the following constants?	Planck’s constant	Boltzmann’s constant	The Rydberg constant	The speed of light	A	"Please choose the most correct answer for the following multiple choice question about college physics. De Broglie hypothesized that the linear momentum and wavelength of a free massive particle are related by which of the following constants?
 
 A. Planck’s constant
@@ -283,7 +283,7 @@ A. Planck’s constant"	"De Broglie's hypothesis states that particles of matter
 
 Where h is a constant known as Planck's constant. In conclusion, the correct answer is:
 
-A. Planck’s constant"	False
+A. Planck’s constant"	True
 college_physics	9	If the total energy of a particle of mass m is equal to twice its rest energy, then the magnitude of the particle’s relativistic momentum is	mc/2	mc/(2^(1/2))	mc	(3^(1/2))mc	D	"Please choose the most correct answer for the following multiple choice question about college physics. If the total energy of a particle of mass m is equal to twice its rest energy, then the magnitude of the particle’s relativistic momentum is
 
 A. mc/2
@@ -323,7 +323,7 @@ p = 2 * m * ((3^(1/2)) * c)
 Step 9: Simplify the momentum expression
 p = (3^(1/2)) * 2 * m * c
 
-The correct answer is D. (3^(1/2))mc."	D. (√3)mc	False
+The correct answer is D. (3^(1/2))mc."	D. (√3)mc	True
 college_physics	10	In the diamond structure of elemental carbon, the nearest neighbors of each C atom lie at the corners of a	square	hexagon	cube	tetrahedron	D	"Please choose the most correct answer for the following multiple choice question about college physics. In the diamond structure of elemental carbon, the nearest neighbors of each C atom lie at the corners of a
 
 A. square
@@ -334,7 +334,7 @@ D. tetrahedron
 
 D. tetrahedron"	"The diamond structure of elemental carbon consists of two interpenetrating face-centered cubic (FCC) lattices. In this structure, each carbon atom is covalently bonded to four other carbon atoms in a tetrahedral arrangement. Additionally, the diamond structure can be described as a face-centered cubic unit cell with atoms located at the vertices and the centers of the faces. Therefore, the nearest neighbors of each C atom lie at the corners of a tetrahedron.
 
-The correct answer is D. Tetrahedron."	False
+The correct answer is D. Tetrahedron."	True
 college_physics	11	The coefficient of static friction between a small coin and the surface of a turntable is 0.30. The turntable rotates at 33.3 revolutions per minute. What is the maximum distance from the center of the turntable at which the coin will not slide?	0.024 m	0.048 m	0.121 m	0.242 m	D	"Please choose the most correct answer for the following multiple choice question about college physics. The coefficient of static friction between a small coin and the surface of a turntable is 0.30. The turntable rotates at 33.3 revolutions per minute. What is the maximum distance from the center of the turntable at which the coin will not slide?
 
 A. 0.024 m
@@ -404,14 +404,14 @@ Step 7: Plug in the values and solve for r.
 r = (0.30 * 9.81 m/s^2) / (3.49 rad/s)^2
 r ≈ 0.242 m
 
-The maximum distance from the center of the turntable at which the coin will not slide is approximately 0.242 m. So, the correct answer is D. 0.242 m."	False
+The maximum distance from the center of the turntable at which the coin will not slide is approximately 0.242 m. So, the correct answer is D. 0.242 m."	True
 college_physics	12	The sign of the charge carriers in a doped semiconductor can be deduced by measuring which of the following properties?	Specific heat	Thermal conductivity	Electrical resistivity	Hall coefficient	D	"Please choose the most correct answer for the following multiple choice question about college physics. The sign of the charge carriers in a doped semiconductor can be deduced by measuring which of the following properties?
 
 A. Specific heat
 B. Thermal conductivity
 C. Electrical resistivity
 D. Hall coefficient
-"	True	True	True	D. Hall coefficient	D. Hall coefficient	The sign of the charge carriers in a doped semiconductor can be deduced by measuring the Hall coefficient. This property directly relates to the charge carriers' sign, with a positive Hall coefficient indicating positive charge carriers (holes) and a negative Hall coefficient indicating negative charge carriers (electrons). As specific heat and thermal conductivity are not directly related to the charge carriers' sign, and electrical resistivity does not provide information about the charge's sign, the most correct answer is D. Hall coefficient.	False
+"	True	True	True	D. Hall coefficient	D. Hall coefficient	The sign of the charge carriers in a doped semiconductor can be deduced by measuring the Hall coefficient. This property directly relates to the charge carriers' sign, with a positive Hall coefficient indicating positive charge carriers (holes) and a negative Hall coefficient indicating negative charge carriers (electrons). As specific heat and thermal conductivity are not directly related to the charge carriers' sign, and electrical resistivity does not provide information about the charge's sign, the most correct answer is D. Hall coefficient.	True
 college_physics	13	The primary source of the Sun’s energy is a series of thermonuclear reactions in which the energy produced is c^2 times the mass difference between	two hydrogen atoms and one helium atom	four hydrogen atoms and one helium atom	six hydrogen atoms and two helium atoms	three helium atoms and one carbon atom	B	"Please choose the most correct answer for the following multiple choice question about college physics. The primary source of the Sun’s energy is a series of thermonuclear reactions in which the energy produced is c^2 times the mass difference between
 
 A. two hydrogen atoms and one helium atom
@@ -432,14 +432,14 @@ B. four hydrogen atoms and one helium atom"	"The primary source of the Sun's ene
 
 In the last step, we combine four hydrogen nuclei (protons) in total to produce one helium nucleus. The mass difference between the four hydrogen atoms and one helium atom is the mass that is converted into energy according to Einstein's famous equation, E = mc^2. Therefore, the most correct answer is:
 
-B. four hydrogen atoms and one helium atom."	False
+B. four hydrogen atoms and one helium atom."	True
 college_physics	14	Electromagnetic radiation provides a means to probe aspects of the physical universe. Which of the following statements regarding radiation spectra is NOT correct?	Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample.	The wavelengths identified in an absorption spectrum of an element are among those in its emission spectrum.	Absorption spectra can be used to determine which elements are present in distant stars.	Spectral analysis can be used to identify the composition of galactic dust.	A	"Please choose the most correct answer for the following multiple choice question about college physics. Electromagnetic radiation provides a means to probe aspects of the physical universe. Which of the following statements regarding radiation spectra is NOT correct?
 
 A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample.
 B. The wavelengths identified in an absorption spectrum of an element are among those in its emission spectrum.
 C. Absorption spectra can be used to determine which elements are present in distant stars.
 D. Spectral analysis can be used to identify the composition of galactic dust.
-"	True	True	False	A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample.	"A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample.
+"	True	True	True	A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample.	"A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample.
 
 This statement is incorrect because these lines actually reveal information about the electronic structure of the sample, not the nuclear structure. The nucleus consists of protons and neutrons, whereas the electronic structure relates to the arrangement and energy levels of the electrons orbiting the nucleus.
 
@@ -473,7 +473,7 @@ This statement is correct. Spectral analysis of light emitted or absorbed by gal
 
 The most correct answer is:
 
-A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample."	False
+A. Lines in the infrared, visible, and ultraviolet regions of the spectrum reveal primarily the nuclear structure of the sample."	True
 college_physics	15	Which of the following statements about bosons and/or fermions is true?	Bosons have symmetric wave functions and obey the Pauli exclusion principle.	Bosons have antisymmetric wave functions and do not obey the Pauli exclusion principle.	Fermions have symmetric wave functions and obey the Pauli exclusion principle.	Fermions have antisymmetric wave functions and obey the Pauli exclusion principle.	D	"Please choose the most correct answer for the following multiple choice question about college physics. Which of the following statements about bosons and/or fermions is true?
 
 A. Bosons have symmetric wave functions and obey the Pauli exclusion principle.
@@ -493,7 +493,7 @@ B. Bosons have antisymmetric wave functions (incorrect) and do not obey the Paul
 C. Fermions have symmetric wave functions (incorrect) and obey the Pauli exclusion principle (correct).
 D. Fermions have antisymmetric wave functions (correct) and obey the Pauli exclusion principle (correct).
 
-Answer: The correct answer is D. Fermions have antisymmetric wave functions and obey the Pauli exclusion principle."	D. Fermions have antisymmetric wave functions and obey the Pauli exclusion principle.	False
+Answer: The correct answer is D. Fermions have antisymmetric wave functions and obey the Pauli exclusion principle."	D. Fermions have antisymmetric wave functions and obey the Pauli exclusion principle.	True
 college_physics	0	The quantum efficiency of a photon detector is 0.1. If 100 photons are sent into the detector, one after the other, the detector will detect photons	an average of 10 times, with an rms deviation of about 4	an average of 10 times, with an rms deviation of about 3	an average of 10 times, with an rms deviation of about 1	an average of 10 times, with an rms deviation of about 0.1	B	"Please choose the most correct answer for the following multiple choice question about college physics. The quantum efficiency of a photon detector is 0.1. If 100 photons are sent into the detector, one after the other, the detector will detect photons
 
 A. an average of 10 times, with an rms deviation of about 4
@@ -519,7 +519,7 @@ The formula for the variance in binomial distribution is variance = N * p * (1-p
 Step 3: Calculate the root mean square deviation.
 The root mean square deviation is just the square root of the variance. So, we have rms deviation = sqrt(9) = 3.
 
-Putting it all together, the detector will detect photons an average of 10 times, with an rms deviation of about 3. So, the correct answer is B. an average of 10 times, with an rms deviation of about 3."	False
+Putting it all together, the detector will detect photons an average of 10 times, with an rms deviation of about 3. So, the correct answer is B. an average of 10 times, with an rms deviation of about 3."	True
 college_physics	16	Excited states of the helium atom can be characterized as para- (antiparallel electron spins) and ortho- (parallel electron spins). The observation that an ortho- state has lower energy than the corresponding para- state can be understood in terms of which of the following?	The Heisenberg uncertainty principle	The Pauli exclusion principle	The Bohr model of the atom	Nuclear hyperfine coupling	B	"Please choose the most correct answer for the following multiple choice question about college physics. Excited states of the helium atom can be characterized as para- (antiparallel electron spins) and ortho- (parallel electron spins). The observation that an ortho- state has lower energy than the corresponding para- state can be understood in terms of which of the following?
 
 A. The Heisenberg uncertainty principle
@@ -548,14 +548,14 @@ Nuclear hyperfine coupling (D) involves energy level changes due to the interact
 
 Considering these options, the best answer here is:
 
-B. The Pauli exclusion principle"	False
+B. The Pauli exclusion principle"	True
 college_physics	17	One end of a horizontal, massless spring is attached to a wall. A mass of 0.30 kg is attached to the other end of the spring and rests on a table. The mass is displaced 0.030 m from its equilibrium position and released. It has a speed of 0.040 m/s as it passes through its equilibrium position. In the absence of friction, what is the total mechanical energy of the system?	0.24 mJ	0.38 mJ	0.48 mJ	0.75 mJ	A	"Please choose the most correct answer for the following multiple choice question about college physics. One end of a horizontal, massless spring is attached to a wall. A mass of 0.30 kg is attached to the other end of the spring and rests on a table. The mass is displaced 0.030 m from its equilibrium position and released. It has a speed of 0.040 m/s as it passes through its equilibrium position. In the absence of friction, what is the total mechanical energy of the system?
 
 A. 0.24 mJ
 B. 0.38 mJ
 C. 0.48 mJ
 D. 0.75 mJ
-"	False	False	True	D. 0.75 mJ	"Step 1: Calculate the spring constant (k)
+"	False	False	False	D. 0.75 mJ	"Step 1: Calculate the spring constant (k)
 We know that the mass (m) is 0.30 kg and it was displaced (x) by 0.030 m from its equilibrium position.
 Using Hooke's Law, we can write:
 F = kx
@@ -634,7 +634,7 @@ E = 0.008 J + 0.00024 J
 E ≈ 0.00824 J
 
 Now, convert the total mechanical energy to millijoules (mJ):
-E ≈ 8.24 mJ"	False
+E ≈ 8.24 mJ"	True
 college_physics	18	A meter stick with a speed of 0.8c moves past an observer. In the observer’s reference frame, how long does it take the stick to pass the observer ?	1.6 ns	2.5 ns	4.2 ns	6.9 ns	B	"Please choose the most correct answer for the following multiple choice question about college physics. A meter stick with a speed of 0.8c moves past an observer. In the observer’s reference frame, how long does it take the stick to pass the observer ?
 
 A. 1.6 ns
@@ -709,7 +709,7 @@ As we have found the time in nanoseconds (ns), we can write:
 
 t ≈ 2.5 ns
 
-Therefore, the most correct answer is (B) 2.5 ns."	False
+Therefore, the most correct answer is (B) 2.5 ns."	True
 college_physics	19	Protons used in cancer therapy are typically accelerated to about 0.6c . How much work must be done on a particle of mass m in order for it to reach this speed, assuming it starts at rest?	0.25mc^2	0.60mc^2	0.67mc^2	1.25mc^2	A	"Please choose the most correct answer for the following multiple choice question about college physics. Protons used in cancer therapy are typically accelerated to about 0.6c . How much work must be done on a particle of mass m in order for it to reach this speed, assuming it starts at rest?
 
 A. 0.25mc^2
@@ -753,4 +753,4 @@ Now, we can plug this into the equation for the kinetic energy:
 K.E. = (1.25 - 1)mc^2
 K.E. = 0.25mc^2
 
-So the correct answer is A. 0.25mc^2."	False
+So the correct answer is A. 0.25mc^2."	True
