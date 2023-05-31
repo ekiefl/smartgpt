@@ -9,13 +9,29 @@ SmartGPT was conceived by AIExplained in his video: https://www.youtube.com/watc
 
 ## Is it really better? (yes)
 
+### All subjects
+
 <img src="assets/all_subjects.png"/>
 
-Above are the results from three independent tests, where each test is composed of 57 questions, each from a distinct subject matter (from the MMLU test suite). I couldn't afford the number of tokens that would be required to prove statistical significance, however if people want to donate their API keys, I'm happy to continue the experiment.
+Above are the results from three independent tests, where each test is composed of 57 questions, each from a distinct subject matter (from the MMLU test suite). I couldn't afford the number of tokens that would be required to prove statistical significance, however **if people want to donate their API keys, I'm happy to continue the experiment**.
 
 Overall, it is quite impressive, where **in one case SmartGPT scored 91% on a 57 question all-subjects exam**.
 
-It is also important to consider the quality of answers, even when all models get the question right. For example consider the following abstract algebra questions:
+Now diving into individual subject matters.
+
+### College physics
+
+<img src="assets/college_physics_results.png"/>
+
+Above are the results of a 20-question college-level physics exam (again, taken form the MMLU test suite). SmartGPT absolutely hammers it home with 90%, versus 65% for vanilla GPT-4. I don't know what else to say here but wow.
+
+### Formal logic
+
+TODO
+
+### Response quality is superior
+
+It is also important to consider the quality of answers, even when all models get the question right. For example consider the question:
 
 >_Find all zeros in the indicated finite field of the given polynomial with coefficients in that field. x^5 + 3x^3 + x^2 + 2x in Z_5.  
 A. 0  
@@ -51,14 +67,6 @@ SmartGPT response:
 > So the zeros of the polynomial in Z_5 are 0 and 4.
 > 
 > Answer: D. 0, 4
-
-Now diving into individual subject matters.
-
-<img src="assets/college_physics_results.png"/>
-
-Above are the results of a 20-question college-level physics exam (again, taken form the MMLU test suite). SmartGPT absolutely hammers it home with 90%, versus 65% for vanilla GPT-4. I don't know what else to say here but wow.
-
-FIXME formal logic 20x3 questions
 
 ## Explanation of the algorithm
 
