@@ -23,7 +23,7 @@ Now diving into individual subject matters.
 
 <img src="assets/college_physics_results.png"/>
 
-Above are the results of a 20-question college-level physics exam (again, taken form the MMLU test suite). SmartGPT absolutely hammers it home with 90%, versus 65% for vanilla GPT-4. I don't know what else to say here but wow.
+Above are the results of a 20-question college-level physics exam (again, taken form the MMLU test suite). SmartGPT absolutely hammers it home with 90%, versus 65% for vanilla GPT-4. I have manually verified each answer. I don't know what else to say here but wow.
 
 ### Formal logic
 
